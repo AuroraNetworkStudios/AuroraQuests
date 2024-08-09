@@ -5,10 +5,12 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.reward.*;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.event.QuestsLoadedEvent;
 import gg.auroramc.quests.api.quest.task.LevelledTaskEvaluator;
 import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.quartz.SchedulerException;
@@ -51,6 +53,7 @@ public class QuestManager {
         for (var poolEntry : plugin.getConfigManager().getQuestPools().entrySet()) {
             pools.put(poolEntry.getKey(), new QuestPool(poolEntry.getValue(), rewardFactory));
         }
+        Bukkit.getPluginManager().callEvent(new QuestsLoadedEvent());
     }
 
     private Object getPlayerLock(Player player) {
