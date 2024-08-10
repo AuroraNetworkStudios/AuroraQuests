@@ -3,6 +3,7 @@ package gg.auroramc.quests.placeholder;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.placeholder.PlaceholderHandler;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.util.DurationFormatter;
 import gg.auroramc.quests.util.RomanNumber;
 import org.bukkit.entity.Player;
 
@@ -24,7 +25,7 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
         if (full.endsWith("total_completed_raw")) {
             var sum = manager.getQuestPools().stream().mapToLong(p -> p.getCompletedQuestCount(player)).sum();
             return String.valueOf(sum);
-        } else if(full.endsWith("total_completed")) {
+        } else if (full.endsWith("total_completed")) {
             var sum = manager.getQuestPools().stream().mapToLong(p -> p.getCompletedQuestCount(player)).sum();
             return AuroraAPI.formatNumber(sum);
         } else if (full.endsWith("level_roman")) {
@@ -55,6 +56,16 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
             var pool = manager.getQuestPool(full.substring(0, full.length() - 6));
             if (pool == null) return null;
             return AuroraAPI.formatNumber(pool.getCompletedQuestCount(player));
+        } else if (full.endsWith("countdown_long")) {
+            var pool = manager.getQuestPool(full.substring(0, full.length() - 15));
+            if (pool == null) return null;
+            if (pool.isGlobal()) return null;
+            return DurationFormatter.format(pool.getDurationUntilNextRoll(), DurationFormatter.Type.LONG);
+        } else if (full.endsWith("countdown")) {
+            var pool = manager.getQuestPool(full.substring(0, full.length() - 10));
+            if (pool == null) return null;
+            if (pool.isGlobal()) return null;
+            return DurationFormatter.format(pool.getDurationUntilNextRoll(), DurationFormatter.Type.SHORT);
         }
 
         return null;
@@ -77,6 +88,8 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
             list.add(pool.getId() + "_count_raw");
             list.add(pool.getId() + "_current_count");
             list.add(pool.getId() + "_current_completed");
+            list.add(pool.getId() + "_countdown");
+            list.add(pool.getId() + "_countdown_long");
         }
 
         return list;

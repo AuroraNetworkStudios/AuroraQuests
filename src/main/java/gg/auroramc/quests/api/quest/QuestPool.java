@@ -19,6 +19,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.*;
 
 public class QuestPool {
@@ -305,6 +306,11 @@ public class QuestPool {
 
     public long getCompletedQuestCount(Player player) {
         return getQuestData(player).getCompletedCount(getId());
+    }
+
+    public Duration getDurationUntilNextRoll() {
+        if (!isTimedRandom()) return Duration.ZERO;
+        return questRoller.getDurationUntilNextRoll();
     }
 
     public void dispose() {
