@@ -7,8 +7,8 @@ import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.aurora.api.reward.Reward;
-import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.reward.RewardExecutor;
+import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.event.QuestCompletedEvent;
@@ -117,11 +117,16 @@ public class Quest {
     }
 
     public void tryStart(Player player) {
-        if (!holder.isGlobal()) return;
-        if (isUnlocked(player)) return;
-        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        tryStart(player, true);
+    }
 
-        if (config.getStartRequirements() != null && canStart(player)) {
+    public void tryStart(Player player, boolean checkRequirements) {
+        if (!holder.isGlobal()) return;
+        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        if (data.isQuestStartUnlocked(holder.getId(), getId()))
+            return;
+
+        if (!checkRequirements || config.getStartRequirements() != null && canStart(player)) {
             data.setQuestStartUnlock(holder.getId(), getId());
             var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
             Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));

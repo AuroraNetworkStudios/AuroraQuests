@@ -6,6 +6,7 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.quest.Quest;
 import gg.auroramc.quests.menu.MainMenu;
 import gg.auroramc.quests.menu.PoolMenu;
 import org.bukkit.command.CommandSender;
@@ -79,5 +80,14 @@ public class QuestsCommand extends BaseCommand {
                 Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
             }
         }
+    }
+
+    @Subcommand("start")
+    @Description("Starts (forcibly) a quest for the player")
+    @CommandCompletion("@players @globalQuests true|false")
+    @CommandPermission("aurora.quests.admin.start")
+    public void onStart(CommandSender sender, @Flags("other") Player target, Quest quest, @Default("true") Boolean bypassRequirements) {
+        quest.tryStart(target, !bypassRequirements);
+        Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestStarted(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", quest.getConfig().getId()));
     }
 }
