@@ -18,6 +18,7 @@ import gg.auroramc.quests.hooks.shopkeepers.ShopkeepersHook;
 import gg.auroramc.quests.hooks.superiorskyblock.SuperiorSkyblockHook;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import gg.auroramc.quests.hooks.znpcs.ZnpcsHook;
+import gg.auroramc.quests.hooks.znpcsplus.ZnpcPlusHook;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -42,7 +43,8 @@ public enum Hooks {
     FANCY_NPCS(FancyNPCsHook .class, "FancyNpcs"),
     ZNPCS(ZnpcsHook.class, "ServersNPC"),
     EXCELLENT_SHOP(ExcellentShopHook.class, "ExcellentShop"),
-    NEXO(NexoHook.class, "Nexo");
+    NEXO(NexoHook.class, "Nexo"),
+    ZNPCSPlus(ZnpcPlusHook.class, "ZNPCsPlus");
 
     private final Class<? extends Hook> clazz;
     private final Set<String> plugins;

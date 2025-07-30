@@ -26,6 +26,7 @@ softdepend:
   - "ServersNPC"
   - "Nexo"
   - "ExcellentShop"
+  - "ZNPCsPlus"
 
 website: https://auroramc.gg
 

@@ -295,7 +295,7 @@ public class QuestPool {
         }
 
         if (mc.getLevelUpSound().getEnabled()) {
-            var sound = mc.getQuestCompleteSound();
+            var sound = mc.getLevelUpSound();
             SoundUtil.playSound(player, sound.getSound(), sound.getVolume(), sound.getPitch());
         }
 

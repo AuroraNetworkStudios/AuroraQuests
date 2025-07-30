@@ -44,6 +44,7 @@ repositories {
     maven("https://repo.tabooproject.org/repository/releases/")
     maven("https://repo.nexomc.com/releases/")
     maven("https://repo.nightexpressdev.com/releases")
+    maven("https://repo.pyr.lol/snapshots")
 }
 
 dependencies {
@@ -69,6 +70,7 @@ dependencies {
     compileOnly(name = "Shopkeepers-2.23.3", group = "com.nisovin.shopkeepers", version = "2.23.3")
     compileOnly(name = "SuperiorSkyblock2-2025.1", group = "com.bgsoftware", version = "2025.1")
     //compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2025.1")
+    compileOnly("lol.pyr:znpcsplus-api:2.1.0-SNAPSHOT")
     compileOnly("de.oliver:FancyNpcs:2.6.0")
     compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
     compileOnly("com.nexomc:nexo:1.8.0")

@@ -3,6 +3,7 @@ package gg.auroramc.quests.api.quest;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.aurora.api.reward.Reward;
 import gg.auroramc.quests.api.objective.ObjectiveDefinition;
+import gg.auroramc.quests.config.quest.QuestConfig;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,4 +23,6 @@ public class QuestDefinition {
     private final LinkedHashMap<String, ObjectiveDefinition> tasks;
     private final LinkedHashMap<String, Reward> rewards;
     private final QuestRequirement requirements;
+    private final QuestConfig.LevelUpMessage questCompleteMessage;
+    private final QuestConfig.LevelUpSound questCompleteSound;
 }

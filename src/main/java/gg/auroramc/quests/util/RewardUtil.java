@@ -20,8 +20,10 @@ public class RewardUtil {
                     text.append(Text.component(player, config.getTitle(), placeholders));
                 }
                 for (var reward : rewards) {
+                    var rewardText = reward.getDisplay(player, placeholders);
+                    if (rewardText.isBlank()) continue;
                     text.append(Component.newline());
-                    var display = config.getLine().replace("{reward}", reward.getDisplay(player, placeholders));
+                    var display = config.getLine().replace("{reward}", rewardText);
                     text.append(Text.component(player, display, placeholders));
                 }
             } else {

@@ -198,13 +198,39 @@ public class Quest extends EventBus {
         var player = data.profile().getPlayer();
         var rewards = definition.getRewards();
 
-        if (gConfig.getQuestCompleteMessage().getEnabled()) {
+        //check if this quest has its own complete message
+        if (definition.getQuestCompleteMessage() != null) {
+            //separate check - we do NOT want to show the global quest complete message if the quest overrides the enable state
+            if (definition.getQuestCompleteMessage().getEnabled()) {
+                var lines = definition.getQuestCompleteMessage().getMessage();
+                var text = RewardUtil.fillRewardMessage(player, gConfig.getDisplayComponents().get("rewards"), lines, placeholders, rewards.values());
+                var delay = definition.getQuestCompleteMessage().getDelay();
+                if (delay > 0) {
+                    player.getScheduler().runDelayed(AuroraQuests.getInstance(), (task) -> player.sendMessage(text), null, delay);
+                } else {
+                    player.sendMessage(text);
+                }
+            }
+        } else if (gConfig.getQuestCompleteMessage().getEnabled()) {
             var lines = gConfig.getQuestCompleteMessage().getMessage();
             var text = RewardUtil.fillRewardMessage(player, gConfig.getDisplayComponents().get("rewards"), lines, placeholders, rewards.values());
             player.sendMessage(text);
         }
 
-        if (gConfig.getQuestCompleteSound().getEnabled()) {
+        //same check, now for the quest complete sound
+        if (definition.getQuestCompleteSound() != null) {
+            //separate check - we do NOT want to play the global quest complete sound if the quest overrides the enable state
+            if (definition.getQuestCompleteSound().getEnabled()) {
+                var sound = definition.getQuestCompleteSound();
+                var delay = definition.getQuestCompleteSound().getDelay();
+                if (delay > 0) {
+                    player.getScheduler().runDelayed(AuroraQuests.getInstance(), (task) ->
+                            SoundUtil.playSound(player, sound.getSound(), sound.getVolume(), sound.getPitch()), null, delay);
+                } else {
+                    SoundUtil.playSound(player, sound.getSound(), sound.getVolume(), sound.getPitch());
+                }
+            }
+        } else if (gConfig.getQuestCompleteSound().getEnabled()) {
             var sound = gConfig.getQuestCompleteSound();
             SoundUtil.playSound(player, sound.getSound(), sound.getVolume(), sound.getPitch());
         }
