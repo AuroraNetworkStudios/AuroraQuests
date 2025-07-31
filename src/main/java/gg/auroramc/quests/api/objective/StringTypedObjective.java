@@ -11,7 +11,10 @@ public abstract class StringTypedObjective extends Objective {
 
     public StringTypedObjective(Quest quest, ObjectiveDefinition definition, Profile.TaskDataWrapper data) {
         super(quest, definition, data);
-        var filter = new StringTypeFilter(new HashSet<>(definition.getArgs().getStringList("types")));
+        var filter = new StringTypeFilter(
+                new HashSet<>(definition.getArgs().getStringList("types")),
+                StringTypeFilter.Mode.parse(definition.getArgs().getString("mode", "whitelist"))
+        );
         this.filters.add(filter);
     }
 

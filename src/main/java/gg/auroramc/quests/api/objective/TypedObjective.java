@@ -14,7 +14,10 @@ public abstract class TypedObjective extends Objective {
 
     public TypedObjective(Quest quest, ObjectiveDefinition definition, Profile.TaskDataWrapper data) {
         super(quest, definition, data);
-        var filter = new TypeFilter(definition.getArgs().getStringList("types").stream().map(TypeId::fromString).collect(Collectors.toSet()));
+        var filter = new TypeFilter(
+                definition.getArgs().getStringList("types").stream().map(TypeId::fromString).collect(Collectors.toSet()),
+                TypeFilter.Mode.parse(definition.getArgs().getString("mode", "whitelist"))
+        );
         this.filters.add(filter);
     }
 
