@@ -10,9 +10,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class DealDamageObjective extends TypedObjective {
+    private final boolean countPlayerDamage;
 
     public DealDamageObjective(Quest quest, ObjectiveDefinition definition, Profile.TaskDataWrapper data) {
         super(quest, definition, data);
+        this.countPlayerDamage = definition.getArgs().getBoolean("count-player-damage", false);
     }
 
     @Override
@@ -23,6 +25,10 @@ public class DealDamageObjective extends TypedObjective {
     public void handle(EntityDamageByEntityEvent event) {
         var damager = event.getDamager();
         if (!(damager instanceof Player player) || player != data.profile().getPlayer()) return;
+
+        if (event.getEntity() instanceof Player && !countPlayerDamage) {
+            return;
+        }
 
         var id = AuroraAPI.getEntityManager().resolveId(event.getEntity());
         progress(event.getFinalDamage(), meta(id));
