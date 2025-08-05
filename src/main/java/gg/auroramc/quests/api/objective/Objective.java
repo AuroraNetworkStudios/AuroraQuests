@@ -51,7 +51,7 @@ public abstract class Objective extends EventBus {
         }
     }
 
-    protected <E extends Event> void onEvent(Class<E> event, Consumer<E> handler, EventPriority priority, boolean ignoreCancelled) {
+    protected <E extends Event> void onEvent(Class<E> event, Consumer<E> handler, EventPriority priority, boolean ignoreCancelled, boolean handleSubclass) {
         if (subscriptions == null) {
             subscriptions = new ArrayList<>();
         }
@@ -63,11 +63,15 @@ public abstract class Objective extends EventBus {
             } else {
                 handler.accept(e);
             }
-        }, priority, ignoreCancelled));
+        }, priority, ignoreCancelled, handleSubclass));
     }
 
     protected <E extends Event> void onEvent(Class<E> event, Consumer<E> handler, EventPriority priority) {
-        this.onEvent(event, handler, priority, true);
+        this.onEvent(event, handler, priority, true, false);
+    }
+
+    protected <E extends Event> void onEvent(Class<E> event, Consumer<E> handler, EventPriority priority, boolean ignoreCancelled) {
+        this.onEvent(event, handler, priority, ignoreCancelled, false);
     }
 
     protected void syncInterval(Runnable runnable, int delay, int interval, boolean global) {

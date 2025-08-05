@@ -9,11 +9,13 @@ import org.bukkit.event.Listener;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class BukkitEventBus implements Listener {
+    private final ConcurrentLinkedQueue<Listener> queue = new ConcurrentLinkedQueue<>();
     private final ConcurrentMap<EventPriority, Set<Class<? extends Event>>> events = new ConcurrentHashMap<>();
     private final ConcurrentMap<Class<? extends Event>,
             ConcurrentMap<EventPriority, CopyOnWriteArrayList<Consumer<? extends Event>>>> subscribers
@@ -23,17 +25,32 @@ public class BukkitEventBus implements Listener {
             Class<E> eventType,
             Consumer<E> handler,
             EventPriority priority,
-            boolean ignoreCancelled
+            boolean ignoreCancelled,
+            boolean handleSubclass
     ) {
         // atomically register with Bukkit exactly once
         events.compute(priority, (prio, set) -> {
-            if (set == null) set = ConcurrentHashMap.newKeySet();
-            if (set.add(eventType)) {
+            if (set == null) {
+                set = ConcurrentHashMap.newKeySet();
+            }
+            boolean wasAdded = set.add(eventType);
+
+            if (wasAdded) {
                 Bukkit.getPluginManager().registerEvent(
                         eventType, this, priority,
-                        (lst, evt) -> dispatch(priority, evt),
+                        (lst, evt) -> {
+                            if (handleSubclass) {
+                                if (!eventType.isInstance(evt)) {
+                                    return;
+                                }
+                            } else if (evt.getClass() != eventType) {
+                                return;
+                            }
+                            dispatch(priority, evt);
+                        },
                         AuroraQuests.getInstance(), ignoreCancelled
                 );
+
             }
             return set;
         });
@@ -45,7 +62,10 @@ public class BukkitEventBus implements Listener {
         var handlers = prMap.computeIfAbsent(
                 priority, k -> new CopyOnWriteArrayList<>()
         );
-        if (!handlers.contains(handler)) {
+
+        boolean handlerExists = handlers.contains(handler);
+
+        if (!handlerExists) {
             handlers.add(handler);
         }
 
@@ -54,14 +74,17 @@ public class BukkitEventBus implements Listener {
 
     @SuppressWarnings("unchecked")
     private void dispatch(EventPriority priority, Event event) {
-        // exact-class dispatch:
         var prMap = subscribers.get(event.getClass());
-        if (prMap == null) return;
+        if (prMap == null) {
+            return;
+        }
 
         var handlers = prMap.get(priority);
-        if (handlers == null) return;
+        if (handlers == null) {
+            return;
+        }
 
-        for (var h : handlers) {
+        for (Consumer<? extends Event> h : handlers) {
             ((Consumer<Event>) h).accept(event);
         }
     }
