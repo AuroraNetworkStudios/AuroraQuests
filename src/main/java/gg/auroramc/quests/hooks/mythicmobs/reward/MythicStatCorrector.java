@@ -15,7 +15,7 @@ public class MythicStatCorrector implements RewardCorrector {
     @Override
     public void correctRewards(Player player) {
         var plugin = AuroraQuests.getInstance();
-        var manager = plugin.getQuestManager();
+        var profile = plugin.getProfileManager().getProfile(player);
         var mythic = MythicBukkit.inst();
         var registry = mythic.getPlayerManager().getProfile(player).getStatRegistry();
 
@@ -28,16 +28,16 @@ public class MythicStatCorrector implements RewardCorrector {
                 });
 
         // Gather new stat modifiers
-        for (var pool : manager.getQuestPools()) {
+        for (var pool : profile.getQuestPools()) {
             // Correct global quests
             if (pool.isGlobal()) {
                 for (var quest : pool.getQuests()) {
-                    if (!quest.isCompleted(player)) continue;
+                    if (!quest.isCompleted()) continue;
 
-                    for (var reward : quest.getRewards().values()) {
+                    for (var reward : quest.getDefinition().getRewards().values()) {
                         if (reward instanceof MythicStatReward statReward && statReward.isValid()) {
                             statMap.computeIfAbsent(statReward.getStatType(), (key) -> Maps.newHashMap())
-                                    .merge(statReward.getModifierType(), statReward.getValue(quest.getPlaceholders(player)), Double::sum);
+                                    .merge(statReward.getModifierType(), statReward.getValue(quest.getPlaceholders()), Double::sum);
                         }
                     }
                 }
@@ -45,12 +45,12 @@ public class MythicStatCorrector implements RewardCorrector {
 
             // Correct quest pool leveling
             if (!pool.hasLeveling()) continue;
-            var level = pool.getPlayerLevel(player);
+            var level = pool.getLevel();
 
             for (int i = 1; i < level + 1; i++) {
-                var matcher = pool.getMatcherManager().getBestMatcher(i);
+                var matcher = pool.getPool().getMatcherManager().getBestMatcher(i);
                 if (matcher == null) continue;
-                var placeholders = pool.getLevelPlaceholders(player, i);
+                var placeholders = pool.getLevelPlaceholders(i);
                 for (var reward : matcher.computeRewards(i)) {
                     if (reward instanceof MythicStatReward statReward && statReward.isValid()) {
                         statMap.computeIfAbsent(statReward.getStatType(), (key) -> Maps.newHashMap())

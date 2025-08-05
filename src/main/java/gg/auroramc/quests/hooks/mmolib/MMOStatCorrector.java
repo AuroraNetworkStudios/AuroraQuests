@@ -25,7 +25,7 @@ public class MMOStatCorrector implements RewardCorrector {
 
     @Override
     public void correctRewards(Player player) {
-        var manager = plugin.getQuestManager();
+        var profile = plugin.getProfileManager().getProfile(player);
 
         MMOPlayerData playerData = MMOPlayerData.get(player);
         StatMap stats = playerData.getStatMap();
@@ -33,18 +33,18 @@ public class MMOStatCorrector implements RewardCorrector {
         Map<String, MMOStat> statMap = Maps.newHashMap();
 
         // Gather new stat modifiers
-        for (var pool : manager.getQuestPools()) {
+        for (var pool : profile.getQuestPools()) {
             if (pool.isGlobal()) {
                 for (var quest : pool.getQuests()) {
-                    if (!quest.isCompleted(player)) continue;
+                    if (!quest.isCompleted()) continue;
 
-                    for (var reward : quest.getRewards().values()) {
+                    for (var reward : quest.getDefinition().getRewards().values()) {
                         if (reward instanceof MMOStatReward statReward && statReward.isValid()) {
                             var key = NamespacedId.of(MMOStatReward.getMMO_STAT(), statReward.getStat()).toString();
                             var current = statReward.getCurrentModifier(key, stats);
                             UUID uuid = current != null ? current.getUniqueId() : UUID.randomUUID();
                             statMap.merge(statReward.getStat(),
-                                    new MMOStat(statReward.getModifierType(), statReward.getValue(quest.getPlaceholders(player)), key, uuid),
+                                    new MMOStat(statReward.getModifierType(), statReward.getValue(quest.getPlaceholders()), key, uuid),
                                     (a, b) -> new MMOStat(statReward.getModifierType(), a.value() + b.value(), a.key(), a.uuid()));
                         }
                     }
@@ -53,12 +53,12 @@ public class MMOStatCorrector implements RewardCorrector {
 
 
             if (!pool.hasLeveling()) continue;
-            var level = pool.getPlayerLevel(player);
+            var level = pool.getLevel();
 
             for (int i = 1; i < level + 1; i++) {
-                var matcher = pool.getMatcherManager().getBestMatcher(i);
+                var matcher = pool.getPool().getMatcherManager().getBestMatcher(i);
                 if (matcher == null) continue;
-                var placeholders = pool.getLevelPlaceholders(player, i);
+                var placeholders = pool.getLevelPlaceholders(i);
                 for (var reward : matcher.computeRewards(i)) {
                     if (reward instanceof MMOStatReward statReward && statReward.isValid()) {
                         var key = NamespacedId.of(MMOStatReward.getMMO_STAT(), statReward.getStat()).toString();

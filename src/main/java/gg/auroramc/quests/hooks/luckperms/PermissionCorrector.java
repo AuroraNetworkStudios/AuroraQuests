@@ -16,21 +16,21 @@ public class PermissionCorrector implements RewardCorrector {
     @Override
     public void correctRewards(Player player) {
         var plugin = AuroraQuests.getInstance();
-        var manager = plugin.getQuestManager();
+        var profile = plugin.getProfileManager().getProfile(player);
 
         List<Node> nodesToAdd = new ArrayList<>();
 
-        for (var pool : manager.getQuestPools()) {
+        for (var pool : profile.getQuestPools()) {
             // Correct global quests
             if (pool.isGlobal()) {
                 for (var quest : pool.getQuests()) {
-                    if (!quest.isCompleted(player)) continue;
+                    if (!quest.isCompleted()) continue;
 
-                    for (var reward : quest.getRewards().values()) {
+                    for (var reward : quest.getDefinition().getRewards().values()) {
                         if (reward instanceof PermissionReward permissionReward) {
                             if (permissionReward.getPermissions() == null || permissionReward.getPermissions().isEmpty())
                                 continue;
-                            var nodes = permissionReward.buildNodes(player, quest.getPlaceholders(player));
+                            var nodes = permissionReward.buildNodes(player, quest.getPlaceholders());
                             nodesToAdd.addAll(nodes);
                         }
                     }
@@ -39,12 +39,12 @@ public class PermissionCorrector implements RewardCorrector {
 
             // Correct quest pool leveling
             if (!pool.hasLeveling()) continue;
-            var level = pool.getPlayerLevel(player);
+            var level = pool.getLevel();
 
             for (int i = 1; i < level + 1; i++) {
-                var matcher = pool.getMatcherManager().getBestMatcher(i);
+                var matcher = pool.getPool().getMatcherManager().getBestMatcher(i);
                 if (matcher == null) continue;
-                var placeholders = pool.getLevelPlaceholders(player, i);
+                var placeholders = pool.getLevelPlaceholders(i);
                 for (var reward : matcher.computeRewards(i)) {
                     if (reward instanceof PermissionReward permissionReward) {
                         if (permissionReward.getPermissions() == null || permissionReward.getPermissions().isEmpty())

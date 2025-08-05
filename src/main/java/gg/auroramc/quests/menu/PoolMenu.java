@@ -3,16 +3,16 @@ package gg.auroramc.quests.menu;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
-import gg.auroramc.aurora.api.menu.MenuAction;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.event.objective.PlayerTakeItemEvent;
+import gg.auroramc.quests.api.objective.ObjectiveType;
+import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.api.quest.Quest;
-import gg.auroramc.quests.api.quest.QuestPool;
-import gg.auroramc.quests.api.quest.TaskType;
+import gg.auroramc.quests.api.questpool.QuestPool;
 import gg.auroramc.quests.util.RomanNumber;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,20 +22,20 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PoolMenu {
-    private final Player player;
+    private final Profile profile;
     private final QuestPool pool;
     private int page = 0;
     private boolean isCompletedQuests = false;
     private final Runnable backAction;
 
-    public PoolMenu(Player player, QuestPool pool, @Nullable Runnable backAction) {
-        this.player = player;
+    public PoolMenu(Profile profile, QuestPool pool, @Nullable Runnable backAction) {
+        this.profile = profile;
         this.pool = pool;
         this.backAction = backAction;
     }
 
-    public PoolMenu(Player player, QuestPool pool) {
-        this(player, pool, null);
+    public PoolMenu(Profile profile, QuestPool pool) {
+        this(profile, pool, null);
     }
 
     public void open() {
@@ -43,9 +43,10 @@ public class PoolMenu {
     }
 
     private AuroraMenu createMenu() {
-        var config = pool.getConfig();
+        var config = pool.getPool().getDefinition();
         var mc = config.getMenu();
         var cmf = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
+        var player = profile.getPlayer();
 
 
         var menu = new AuroraMenu(player, mc.getTitle(), mc.getRows() * 9, false, Placeholder.of("{name}", config.getName()));
@@ -57,10 +58,10 @@ public class PoolMenu {
         }
 
         // Custom items
-        var totalCompletedPlaceholder = Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount(player)));
-        var levelPlaceholder = Placeholder.of("{level}", AuroraAPI.formatNumber(pool.getPlayerLevel(player)));
-        var levelRawPlaceholder = Placeholder.of("{level_raw}", pool.getPlayerLevel(player));
-        var levelRomanPlaceholder = Placeholder.of("{level_roman}", RomanNumber.toRoman(pool.getPlayerLevel(player)));
+        var totalCompletedPlaceholder = Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount()));
+        var levelPlaceholder = Placeholder.of("{level}", AuroraAPI.formatNumber(pool.getLevel()));
+        var levelRawPlaceholder = Placeholder.of("{level_raw}", pool.getLevel());
+        var levelRomanPlaceholder = Placeholder.of("{level_roman}", RomanNumber.toRoman(pool.getLevel()));
 
         var lbm = AuroraAPI.getLeaderboards();
         var boardName = "quests_" + pool.getId();
@@ -111,7 +112,7 @@ public class PoolMenu {
                 if (backAction != null) {
                     backAction.run();
                 } else {
-                    new MainMenu(player).open();
+                    new MainMenu(profile).open();
                 }
             });
         }
@@ -129,24 +130,24 @@ public class PoolMenu {
             var quest = quests.get(i);
             var extraLore = new ArrayList<String>();
 
-            if (quest.isCompleted(player)) {
-                extraLore.addAll(quest.getConfig().getCompletedLore());
+            if (quest.isCompleted()) {
+                extraLore.addAll(quest.getDefinition().getCompletedLore());
             } else {
-                if (quest.getConfig().getUncompletedLore() != null) {
-                    extraLore.addAll(quest.getConfig().getUncompletedLore());
+                if (quest.getDefinition().getUncompletedLore() != null) {
+                    extraLore.addAll(quest.getDefinition().getUncompletedLore());
                 }
             }
 
-            if (!quest.isUnlocked(player) && pool.isGlobal()) {
-                extraLore.addAll(quest.getConfig().getLockedLore());
+            if (!quest.isUnlocked() && pool.isGlobal()) {
+                extraLore.addAll(quest.getDefinition().getLockedLore());
             }
 
-            var builder = ItemBuilder.of(quest.getConfig().getMenuItem()).slot(slot)
-                    .placeholder(quest.getPlaceholders(player)).extraLore(extraLore);
+            var builder = ItemBuilder.of(quest.getDefinition().getMenuItem()).slot(slot)
+                    .placeholder(quest.getPlaceholders()).extraLore(extraLore);
 
-            if (quest.getTaskTypes().contains(TaskType.TAKE_ITEM) && (quest.isUnlocked(player) || !pool.isGlobal()) && !quest.isCompleted(player)) {
+            if ((quest.isUnlocked() || !pool.isGlobal()) && !quest.isCompleted() && quest.getDefinition().getTasks().values().stream().anyMatch(t -> t.getTask().equals(ObjectiveType.TAKE_ITEM))) {
                 menu.addItem(builder.build(player), (e) -> {
-                    quest.tryTakeItems(player);
+                    Bukkit.getPluginManager().callEvent(new PlayerTakeItemEvent(player, quest));
                     createMenu().open(player);
                 });
             } else {
@@ -218,9 +219,9 @@ public class PoolMenu {
 
             menu.addItem(item, (e) -> {
                 if (backAction != null) {
-                    new LevelMenu(player, pool, () -> new PoolMenu(player, pool, backAction).open()).open();
+                    new LevelMenu(profile, pool, () -> new PoolMenu(profile, pool, backAction).open()).open();
                 } else {
-                    new LevelMenu(player, pool, null).open();
+                    new LevelMenu(profile, pool, null).open();
                 }
             });
         }
@@ -235,16 +236,16 @@ public class PoolMenu {
         if (pool.isGlobal()) {
             if (isCompletedQuests) {
                 quests = pool.getQuests().stream()
-                        .filter(q -> q.isCompleted(player))
+                        .filter(Quest::isCompleted)
                         .sorted(Comparator.comparing(Quest::getId)).toList();
             } else {
                 quests = pool.getQuests().stream()
-                        .filter(q -> !q.isCompleted(player))
-                        .filter(q -> q.isUnlocked(player) || q.getConfig().getStartRequirements().isAlwaysShowInMenu())
+                        .filter(q -> !q.isCompleted())
+                        .filter(q -> q.isUnlocked() || q.getDefinition().getRequirements().isAlwaysShowInMenu())
                         .sorted(Comparator.comparing(Quest::getId)).toList();
             }
         } else {
-            quests = pool.getPlayerQuests(player).stream().sorted(Comparator.comparing(a -> gc.getSortOderMap().get(a.getDifficulty()))).toList();
+            quests = pool.getActiveQuests().stream().sorted(Comparator.comparing(a -> gc.getSortOderMap().get(a.getDefinition().getDifficulty()))).toList();
         }
         return quests;
     }

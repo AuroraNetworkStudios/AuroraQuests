@@ -1,13 +1,11 @@
 package gg.auroramc.quests.hooks.citizens;
 
 import gg.auroramc.aurora.api.item.TypeId;
-import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.api.quest.TaskType;
+import gg.auroramc.quests.api.event.objective.PlayerInteractNpcEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.Map;
 
 public class CitizensListener implements Listener {
     @EventHandler(ignoreCancelled = true)
@@ -17,7 +15,6 @@ public class CitizensListener implements Listener {
 
         var id = new TypeId("citizens", String.valueOf(npc.getId()));
 
-        AuroraQuests.getInstance().getQuestManager()
-                .progress(player, TaskType.INTERACT_NPC, 1, Map.of("type", id));
+        Bukkit.getPluginManager().callEvent(new PlayerInteractNpcEvent(player, id, PlayerInteractNpcEvent.InteractionType.RIGHT_CLICK));
     }
 }

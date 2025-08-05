@@ -1,15 +1,17 @@
 package gg.auroramc.quests.hooks.economyshopgui;
 
 import gg.auroramc.aurora.api.AuroraAPI;
-import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.api.quest.TaskType;
+import gg.auroramc.quests.api.event.objective.PlayerEarnFromSellEvent;
+import gg.auroramc.quests.api.event.objective.PlayerPurchaseItemEvent;
+import gg.auroramc.quests.api.event.objective.PlayerSellItemEvent;
+import gg.auroramc.quests.api.event.objective.PlayerSpendOnPurchaseEvent;
 import me.gypopo.economyshopgui.api.events.PostTransactionEvent;
 import me.gypopo.economyshopgui.util.Transaction;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.Map;
 import java.util.Set;
 
 public class EconomyShopGUIListener implements Listener {
@@ -34,13 +36,12 @@ public class EconomyShopGUIListener implements Listener {
             return;
         }
 
-        var manager = AuroraQuests.getInstance().getQuestManager();
         var price = e.getPrice();
 
         if (sellTypes.contains(e.getTransactionType())) {
-            manager.progress(e.getPlayer(), TaskType.SELL_WORTH, price, null);
+            Bukkit.getPluginManager().callEvent(new PlayerEarnFromSellEvent(e.getPlayer(), price));
         } else if (buyTypes.contains(e.getTransactionType())) {
-            manager.progress(e.getPlayer(), TaskType.BUY_WORTH, price, null);
+            Bukkit.getPluginManager().callEvent(new PlayerSpendOnPurchaseEvent(e.getPlayer(), price));
         }
 
         if (sellTypes.contains(e.getTransactionType()) && !e.getItems().isEmpty()) {
@@ -51,7 +52,7 @@ public class EconomyShopGUIListener implements Listener {
                 if (item != null) {
                     var id = AuroraAPI.getItemManager().resolveId(item);
                     if (id != null) {
-                        manager.progress(e.getPlayer(), TaskType.SELL, amount, Map.of("type", id));
+                        Bukkit.getPluginManager().callEvent(new PlayerSellItemEvent(e.getPlayer(), new PlayerSellItemEvent.TransactionItem(id, amount)));
                     }
                 }
             }
@@ -61,7 +62,7 @@ public class EconomyShopGUIListener implements Listener {
             if (item != null) {
                 var id = AuroraAPI.getItemManager().resolveId(item);
                 if (id != null) {
-                    manager.progress(e.getPlayer(), TaskType.SELL, amount, Map.of("type", id));
+                    Bukkit.getPluginManager().callEvent(new PlayerSellItemEvent(e.getPlayer(), new PlayerSellItemEvent.TransactionItem(id, amount)));
                 }
             }
         } else if (buyTypes.contains(e.getTransactionType())) {
@@ -70,7 +71,7 @@ public class EconomyShopGUIListener implements Listener {
             if (item != null) {
                 var id = AuroraAPI.getItemManager().resolveId(item);
                 if (id != null) {
-                    manager.progress(e.getPlayer(), TaskType.BUY, amount, Map.of("type", id));
+                    Bukkit.getPluginManager().callEvent(new PlayerPurchaseItemEvent(e.getPlayer(), new PlayerPurchaseItemEvent.TransactionItem(id, amount)));
                 }
             }
         }

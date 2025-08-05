@@ -12,12 +12,12 @@ public class MythicHook implements Hook {
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new MythicMobListener(), plugin);
 
-        plugin.getQuestManager().getRewardFactory()
+        plugin.getPoolManager().getRewardFactory()
                 .registerRewardType(NamespacedId.fromDefault("mythic_stat"), MythicStatReward.class);
 
-        plugin.getQuestManager().getRewardAutoCorrector()
+        plugin.getPoolManager().getRewardAutoCorrector()
                 .registerCorrector(NamespacedId.fromDefault("mythic_stat"), new MythicStatCorrector());
 
-        AuroraQuests.logger().info("Hooked into MythicMobs for KILL_MOB and KILL_LEVELLED_MOB task type with namespace mythicmobs.");
+        AuroraQuests.logger().info("Hooked into MythicMobs for KILL_MOB, ENTITY_LOOT and KILL_LEVELLED_MOB objectives.");
     }
 }

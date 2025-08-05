@@ -6,6 +6,7 @@ import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.config.CommonMenuConfig;
 import gg.auroramc.quests.config.MainMenuConfig;
 import org.bukkit.Bukkit;
@@ -16,12 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenu {
-    private final Player player;
+    private final Profile profile;
     private int page = 1;
     private int maxPage = 1;
 
-    public MainMenu(Player player) {
-        this.player = player;
+    public MainMenu(Profile profile) {
+        this.profile = profile;
     }
 
     public void open() {
@@ -35,6 +36,7 @@ public class MainMenu {
     private AuroraMenu createMenu() {
         var config = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
         var cmf = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
+        var player = profile.getPlayer();
 
         var menu = new AuroraMenu(player, config.getTitle(), config.getMenuRows() * 9, false);
 
@@ -50,11 +52,11 @@ public class MainMenu {
             });
         }
 
-        var pools = AuroraQuests.getInstance().getQuestManager().getQuestPools();
+        var pools = profile.getQuestPools();
         var maybeInt = pools.stream()
-                .filter(pool -> pool.getConfig().getMenuItem().getShowInMainMenu())
-                .filter(pool -> pool.isUnlocked(player) || pool.getConfig().getUnlockRequirements().isAlwaysShowInMenu())
-                .mapToInt(pool -> pool.getConfig().getMenuItem().getPage()).max();
+                .filter(pool -> pool.getDefinition().getMenuItem().getShowInMainMenu())
+                .filter(pool -> pool.isUnlocked() || pool.getDefinition().getRequirement().isAlwaysShowInMenu())
+                .mapToInt(pool -> pool.getDefinition().getMenuItem().getPage()).max();
 
         if (maybeInt.isPresent()) {
             maxPage = maybeInt.getAsInt();
@@ -65,8 +67,8 @@ public class MainMenu {
 
 
         for (var pool : pools) {
-            if (!pool.isUnlocked(player) && !pool.getConfig().getUnlockRequirements().isAlwaysShowInMenu()) continue;
-            var mi = pool.getConfig().getMenuItem();
+            if (!pool.isUnlocked() && !pool.getDefinition().getRequirement().isAlwaysShowInMenu()) continue;
+            var mi = pool.getDefinition().getMenuItem();
             if (!mi.getShowInMainMenu()) continue;
             if (mi.getPage() != page) continue;
 
@@ -92,18 +94,18 @@ public class MainMenu {
 
             var lore = new ArrayList<String>();
 
-            if (!pool.isUnlocked(player)) {
+            if (!pool.isUnlocked()) {
                 lore.addAll(mi.getLockedLore());
             }
 
             menu.addItem(ItemBuilder.of(mi.getItem())
                     .extraLore(lore)
-                    .placeholder(Placeholder.of("{name}", pool.getConfig().getName()))
-                    .placeholder(Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount(player))))
+                    .placeholder(Placeholder.of("{name}", pool.getDefinition().getName()))
+                    .placeholder(Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount())))
                     .placeholder(placeholders)
                     .build(player), (e) -> {
-                if (pool.isUnlocked(player)) {
-                    new PoolMenu(player, pool).open();
+                if (pool.isUnlocked()) {
+                    new PoolMenu(profile, pool).open();
                 }
             });
         }

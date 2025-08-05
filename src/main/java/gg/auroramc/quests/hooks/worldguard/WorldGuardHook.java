@@ -19,7 +19,7 @@ public class WorldGuardHook implements Hook {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new WorldGuardListener(), plugin);
-        AuroraQuests.logger().info("Hooked into WorldGuard for flags, region filters and ENTER_REGION task type");
+        AuroraQuests.logger().info("Hooked into WorldGuard for flags, region filters and ENTER_REGION objective.");
     }
 
     @Override

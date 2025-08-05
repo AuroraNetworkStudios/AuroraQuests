@@ -8,6 +8,6 @@ public class AdyeshachHook implements Hook {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new NpcListener(), AuroraQuests.getInstance());
-        AuroraQuests.logger().info("Hooked into Adyeshach for INTERACT_NPC task type with namespace 'adyeshach'");
+        AuroraQuests.logger().info("Hooked into Adyeshach for INTERACT_NPC objective.");
     }
 }

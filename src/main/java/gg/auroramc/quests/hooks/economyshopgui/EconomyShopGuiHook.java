@@ -8,6 +8,6 @@ public class EconomyShopGuiHook implements Hook {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new EconomyShopGUIListener(), plugin);
-        AuroraQuests.logger().info("Hooked into EconomyShopGUI for SELL_WORTH, SELL and BUY_WORTH, BUY task types");
+        AuroraQuests.logger().info("Hooked into EconomyShopGUI for SELL_WORTH, SELL and BUY_WORTH, BUY objectives.");
     }
 }

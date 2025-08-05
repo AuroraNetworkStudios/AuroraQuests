@@ -6,7 +6,9 @@ import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.api.quest.QuestPool;
+import gg.auroramc.quests.api.profile.Profile;
+import gg.auroramc.quests.api.questpool.Pool;
+import gg.auroramc.quests.api.questpool.QuestPool;
 import gg.auroramc.quests.util.RomanNumber;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,15 +19,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class LevelMenu {
-    private final Player player;
+    private final Profile profile;
     private final QuestPool pool;
     private int page = 0;
     private final Runnable backAction;
 
-    public LevelMenu(Player player, QuestPool pool, @Nullable Runnable backAction) {
-        this.player = player;
+    public LevelMenu(Profile profile, QuestPool pool, @Nullable Runnable backAction) {
+        this.profile = profile;
         this.pool = pool;
-        this.backAction = Objects.requireNonNullElseGet(backAction, () -> () -> new PoolMenu(player, pool).open());
+        this.backAction = Objects.requireNonNullElseGet(backAction, () -> () -> new PoolMenu(profile, pool).open());
     }
 
     public void open() {
@@ -33,11 +35,12 @@ public class LevelMenu {
     }
 
     private AuroraMenu createMenu() {
-        var cf = pool.getConfig().getLeveling();
+        var cf = pool.getPool().getDefinition().getLeveling();
         var cm = cf.getMenu();
         var cmf = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
+        var player = profile.getPlayer();
 
-        var menu = new AuroraMenu(player, cm.getTitle(), cm.getRows() * 9, false, Placeholder.of("{name}", pool.getConfig().getName()));
+        var menu = new AuroraMenu(player, cm.getTitle(), cm.getRows() * 9, false, Placeholder.of("{name}", pool.getName()));
 
         if (cm.getFiller().getEnabled()) {
             menu.addFiller(ItemBuilder.of(cm.getFiller().getItem()).toItemStack(player));
@@ -57,10 +60,10 @@ public class LevelMenu {
             });
         }
 
-        var level = pool.getPlayerLevel(player);
+        var level = pool.getLevel();
 
         List<Placeholder<?>> placeholders = List.of(
-                Placeholder.of("{name}", pool.getConfig().getName()),
+                Placeholder.of("{name}", pool.getPool().getDefinition().getName()),
                 Placeholder.of("{level}", AuroraAPI.formatNumber(level)),
                 Placeholder.of("{level_roman}", RomanNumber.toRoman(level)),
                 Placeholder.of("{level_raw}", level)
@@ -86,9 +89,9 @@ public class LevelMenu {
                     : cmf.getItems().get("locked-level").merge(cm.getItems().get("locked-level"));
 
 
-            var rewards = pool.getMatcherManager().getBestMatcher(rLevel).computeRewards(rLevel);
+            var rewards = pool.getPool().getMatcherManager().getBestMatcher(rLevel).computeRewards(rLevel);
 
-            var currentProgress = Math.min(pool.getCompletedQuestCount(player), requirement);
+            var currentProgress = Math.min(pool.getCompletedQuestCount(), requirement);
             var bar = cmf.getProgressBar();
             var pcs = bar.getLength();
             var completedPercent = Math.min((double) currentProgress / requirement, 1);
@@ -99,7 +102,7 @@ public class LevelMenu {
 
             List<Placeholder<?>> rPlaceholders = List.of(
                     Placeholder.of("{player}", player.getName()),
-                    Placeholder.of("{pool}", pool.getConfig().getName()),
+                    Placeholder.of("{pool}", pool.getName()),
                     Placeholder.of("{pool_id}", pool.getId()),
                     Placeholder.of("{level}", AuroraAPI.formatNumber(rLevel)),
                     Placeholder.of("{level_roman}", RomanNumber.toRoman(rLevel)),
@@ -167,12 +170,12 @@ public class LevelMenu {
     }
 
     private List<Integer> getPage(int page, int pageSize) {
-        var requirements = pool.getConfig().getLeveling().getRequirements();
+        var requirements = pool.getPool().getDefinition().getLeveling().getRequirements();
         return requirements.stream().skip((long) page * pageSize).limit(pageSize).toList();
     }
 
     private int getTotalPageCount(int pageSize) {
-        var requirements = pool.getConfig().getLeveling().getRequirements();
+        var requirements = pool.getPool().getDefinition().getLeveling().getRequirements();
         return (int) Math.ceil((double) requirements.size() / pageSize) - 1;
     }
 }

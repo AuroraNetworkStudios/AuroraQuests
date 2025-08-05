@@ -2,15 +2,14 @@ package gg.auroramc.quests.hooks.mythicmobs;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
-import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.api.quest.TaskType;
+import gg.auroramc.quests.api.event.objective.PlayerKillMobEvent;
+import gg.auroramc.quests.api.event.objective.PlayerLootEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import java.util.Map;
 
 public class MythicMobListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -19,23 +18,17 @@ public class MythicMobListener implements Listener {
 
         var mobName = e.getMob().getType().getInternalName();
         var drops = e.getDrops();
-        var manager = AuroraQuests.getInstance().getQuestManager();
+        var typeId = new TypeId("mythicmobs", mobName);
 
         if (e.getMob().getLevel() > 0) {
-            manager.progress(player, TaskType.KILL_LEVELLED_MOB, 1, Map.of(
-                    "type", new TypeId("mythicmobs", mobName),
-                    "level", Math.floor(e.getMob().getLevel())
-            ));
+            Bukkit.getPluginManager().callEvent(new PlayerKillMobEvent(player, typeId, 1, e.getMob().getLevel()));
         }
 
-        manager.progress(player, TaskType.KILL_MOB, 1, Map.of(
-                "type", new TypeId("mythicmobs", mobName)
-        ));
+        Bukkit.getPluginManager().callEvent(new PlayerKillMobEvent(player, typeId, 1));
 
         for (var drop : drops) {
-            var typeId = AuroraAPI.getItemManager().resolveId(drop);
-            manager.progress(player, TaskType.ENTITY_LOOT, drop.getAmount(), Map.of("type", typeId));
+            var dropId = AuroraAPI.getItemManager().resolveId(drop);
+            Bukkit.getPluginManager().callEvent(new PlayerLootEvent(player, dropId, drop.getAmount(), PlayerLootEvent.Source.ENTITY));
         }
-
     }
 }

@@ -8,6 +8,6 @@ public class CitizensHook implements Hook {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new CitizensListener(), plugin);
-        AuroraQuests.logger().info("Hooked into Citizens for INTERACT_NPC task type");
+        AuroraQuests.logger().info("Hooked into Citizens for INTERACT_NPC objective.");
     }
 }

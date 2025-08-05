@@ -8,6 +8,6 @@ public class FancyNPCsHook implements Hook {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new NpcListener(), AuroraQuests.getInstance());
-        AuroraQuests.logger().info("Hooked into FancyNPCs for INTERACT_NPC task type with namespace 'fancynpcs'");
+        AuroraQuests.logger().info("Hooked into FancyNPCs for INTERACT_NPC objective.");
     }
 }

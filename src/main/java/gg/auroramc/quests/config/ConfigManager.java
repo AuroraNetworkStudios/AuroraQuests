@@ -2,7 +2,7 @@ package gg.auroramc.quests.config;
 
 import com.google.common.collect.Maps;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.config.quest.PoolConfig;
+import gg.auroramc.quests.api.questpool.PoolConfig;
 import gg.auroramc.quests.config.quest.QuestConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;

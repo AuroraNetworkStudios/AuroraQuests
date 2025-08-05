@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import xyz.jpenilla.runtask.task.AbstractRun
 import groovy.util.Node
 import groovy.util.NodeList
 import java.net.URI
@@ -17,10 +18,11 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.3"
     id("maven-publish")
+    id("xyz.jpenilla.run-paper") version "2.3.0"
 }
 
 group = "gg.auroramc"
-version = "1.4.1"
+version = "2.0.0"
 
 repositories {
     flatDir {
@@ -28,7 +30,7 @@ repositories {
     }
     mavenCentral()
     mavenLocal()
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.auroramc.gg/releases/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvn.lumine.io/repository/maven-public/")
@@ -38,9 +40,11 @@ repositories {
     //maven("https://repo.projectshard.dev/repository/releases/")
     maven("https://repo.oraxen.com/releases")
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
-    maven("https://repo.fancyplugins.de/releases")
+    maven("https://repo.fancyinnovations.com/releases")
     maven("https://repo.tabooproject.org/repository/releases/")
-    maven("https://repo.bg-software.com/repository/api/")
+    maven("https://repo.nexomc.com/releases/")
+    maven("https://repo.nightexpressdev.com/releases")
+    maven("https://repo.pyr.lol/snapshots")
 }
 
 dependencies {
@@ -64,9 +68,14 @@ dependencies {
     compileOnly(name = "MythicDungeons-2.0.0-SNAPSHOT", group = "net.playavalon", version = "2.0.0-SNAPSHOT")
     compileOnly(name = "znpcs-5.0", group = "io.github.gonalez.znpcs", version = "5.0")
     compileOnly(name = "Shopkeepers-2.23.3", group = "com.nisovin.shopkeepers", version = "2.23.3")
-    compileOnly("de.oliver:FancyNpcs:2.2.2")
+    compileOnly(name = "SuperiorSkyblock2-2025.1", group = "com.bgsoftware", version = "2025.1")
+    //compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2025.1")
+    compileOnly("lol.pyr:znpcsplus-api:2.1.0-SNAPSHOT")
+    compileOnly("de.oliver:FancyNpcs:2.6.0")
     compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
-    compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2024.3")
+    compileOnly("com.nexomc:nexo:1.8.0")
+    compileOnly("su.nightexpress.excellentshop:Core:4.17.4")
+    compileOnly("su.nightexpress.economybridge:economy-bridge:1.2.1")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")
@@ -110,9 +119,19 @@ tasks.processResources {
     }
 }
 
+runPaper.folia.registerTask()
+
 tasks {
     build {
         dependsOn(shadowJar)
+    }
+    runServer {
+        downloadPlugins {
+            modrinth("AuroraLib", "2.3.3")
+            hangar("PlaceholderAPI", "2.11.6")
+            url("https://download.luckperms.net/1593/bukkit/loader/LuckPerms-Bukkit-5.5.8.jar")
+        }
+        minecraftVersion("1.21.1")
     }
 }
 
@@ -153,4 +172,15 @@ publishing {
             }
         }
     }
+}
+
+tasks.withType<AbstractRun>().configureEach {
+//    javaLauncher = javaToolchains.launcherFor {
+//        vendor.set(JvmVendorSpec.JETBRAINS)
+//        languageVersion.set(JavaLanguageVersion.of(21))
+//    }
+    jvmArgs(
+        // "-XX:+AllowEnhancedClassRedefinition", //
+        "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" // Enable remote debugging
+    )
 }

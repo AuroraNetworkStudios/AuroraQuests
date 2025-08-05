@@ -5,14 +5,15 @@ import com.bgsoftware.superiorskyblock.api.events.*;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import gg.auroramc.aurora.api.events.user.AuroraUserLoadedEvent;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.api.quest.TaskType;
+import gg.auroramc.quests.api.event.objective.PlayerIslandLevelChangeEvent;
+import gg.auroramc.quests.api.event.objective.PlayerIslandWorthChangeEvent;
+import gg.auroramc.quests.api.event.objective.PlayerJoinIslandEvent;
+import gg.auroramc.quests.api.event.objective.PlayerUpgradeIslandEvent;
 import gg.auroramc.quests.hooks.Hook;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import java.util.Map;
 
 public class SuperiorSkyblockHook implements Hook, Listener {
     private AuroraQuests plugin;
@@ -20,16 +21,17 @@ public class SuperiorSkyblockHook implements Hook, Listener {
     @Override
     public void hook(AuroraQuests plugin) {
         this.plugin = plugin;
+        AuroraQuests.logger().info("Hooked SuperiorSkyblock2 for island hooks.");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onIslandCreate(IslandCreateEvent event) {
-        plugin.getQuestManager().progress(event.getPlayer().asPlayer(), TaskType.JOIN_ISLAND, 1, null);
+        Bukkit.getPluginManager().callEvent(new PlayerJoinIslandEvent(event.getPlayer().asPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onIslandJoin(IslandJoinEvent event) {
-        plugin.getQuestManager().progress(event.getPlayer().asPlayer(), TaskType.JOIN_ISLAND, 1, null);
+        Bukkit.getPluginManager().callEvent(new PlayerJoinIslandEvent(event.getPlayer().asPlayer()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -71,8 +73,8 @@ public class SuperiorSkyblockHook implements Hook, Listener {
         for (var sPlayer : island.getIslandMembers(true)) {
             var player = sPlayer.asPlayer();
             if (player != null) {
-                plugin.getQuestManager().setProgress(player, TaskType.REACH_ISLAND_WORTH, worth, null);
-                plugin.getQuestManager().setProgress(player, TaskType.REACH_ISLAND_LEVEL, level, null);
+                Bukkit.getPluginManager().callEvent(new PlayerIslandLevelChangeEvent(player, level));
+                Bukkit.getPluginManager().callEvent(new PlayerIslandWorthChangeEvent(player, worth));
             }
         }
     }
@@ -83,12 +85,7 @@ public class SuperiorSkyblockHook implements Hook, Listener {
         for (var sPlayer : island.getIslandMembers(true)) {
             var player = sPlayer.asPlayer();
             if (player != null) {
-                plugin.getQuestManager().setProgress(
-                        player,
-                        TaskType.UPGRADE_ISLAND,
-                        event.getUpgradeLevel().getLevel(),
-                        Map.of("type", event.getUpgrade().getName())
-                );
+                Bukkit.getPluginManager().callEvent(new PlayerUpgradeIslandEvent(player, event.getUpgrade().getName(), event.getUpgradeLevel().getLevel()));
             }
         }
     }
@@ -98,12 +95,7 @@ public class SuperiorSkyblockHook implements Hook, Listener {
             for (var sPlayer : island.getIslandMembers(true)) {
                 var player = sPlayer.asPlayer();
                 if (player != null) {
-                    plugin.getQuestManager().setProgress(
-                            player,
-                            TaskType.UPGRADE_ISLAND,
-                            upgrade.getValue(),
-                            Map.of("type", upgrade.getKey())
-                    );
+                    Bukkit.getPluginManager().callEvent(new PlayerUpgradeIslandEvent(player, upgrade.getKey(), upgrade.getValue()));
                 }
             }
         }

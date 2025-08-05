@@ -3,6 +3,7 @@ package gg.auroramc.quests.config.quest;
 import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.decorators.IgnoreField;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
+import gg.auroramc.quests.api.questpool.PoolConfig;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,6 +23,8 @@ public class QuestConfig extends AuroraConfig {
     private Map<String, TaskConfig> tasks;
     private ConfigurationSection rewards;
     private StartRequirementConfig startRequirements;
+    private QuestConfig.LevelUpSound questCompleteSound;
+    private QuestConfig.LevelUpMessage questCompleteMessage;
 
     @Setter
     @IgnoreField
@@ -33,5 +36,21 @@ public class QuestConfig extends AuroraConfig {
 
     public QuestConfig(File file) {
         super(file);
+    }
+
+    @Getter
+    public static final class LevelUpMessage {
+        private Boolean enabled;
+        private List<String> message;
+        private int delay;
+    }
+
+    @Getter
+    public static final class LevelUpSound {
+        private Boolean enabled;
+        private String sound;
+        private Float volume;
+        private Float pitch;
+        private int delay;
     }
 }

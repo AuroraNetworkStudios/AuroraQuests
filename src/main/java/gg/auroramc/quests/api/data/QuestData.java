@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import gg.auroramc.aurora.api.user.UserDataHolder;
 import gg.auroramc.aurora.api.util.NamespacedId;
-import gg.auroramc.quests.api.quest.Quest;
-import gg.auroramc.quests.api.quest.QuestPool;
+import gg.auroramc.quests.api.quest.QuestDefinition;
+import gg.auroramc.quests.api.questpool.Pool;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,6 +77,16 @@ public class QuestData extends UserDataHolder {
         var completesQuests = completedQuests.computeIfAbsent(poolId, k -> new HashSet<>());
         completesQuests.remove(questId);
         progression.computeIfAbsent(poolId, k -> Maps.newConcurrentMap()).remove(questId);
+        dirty.set(true);
+    }
+
+    public void resetTaskProgress(String poolId, String questId, String taskId) {
+        var completesQuests = completedQuests.computeIfAbsent(poolId, k -> new HashSet<>());
+        completesQuests.remove(questId);
+        var progression = this.progression.computeIfAbsent(poolId, k -> Maps.newConcurrentMap()).get(questId);
+        if (progression != null) {
+            progression.remove(taskId);
+        }
         dirty.set(true);
     }
 
@@ -205,8 +215,8 @@ public class QuestData extends UserDataHolder {
         poolUnlocks.addAll(data.getStringList("pool_unlocks"));
     }
 
-    public void purgeInvalidData(Collection<QuestPool> questPools) {
-        var poolIds = questPools.stream().map(QuestPool::getId).collect(Collectors.toSet());
+    public void purgeInvalidData(Collection<Pool> pools) {
+        var poolIds = pools.stream().map(Pool::getId).collect(Collectors.toSet());
 
         completedCount.keySet().removeIf(poolId -> !poolIds.contains(poolId));
         progression.keySet().removeIf(poolId -> !poolIds.contains(poolId));
@@ -215,8 +225,8 @@ public class QuestData extends UserDataHolder {
         completedQuests.keySet().removeIf(poolId -> !poolIds.contains(poolId));
         poolUnlocks.removeIf(poolId -> !poolIds.contains(poolId));
 
-        for (var pool : questPools) {
-            var questIds = pool.getQuests().stream().map(Quest::getId).collect(Collectors.toSet());
+        for (var pool : pools) {
+            var questIds = pool.getDefinition().getQuests().values().stream().map(QuestDefinition::getId).collect(Collectors.toSet());
 
             if (progression.containsKey(pool.getId())) {
                 progression.get(pool.getId()).keySet().removeIf(id -> !questIds.contains(id));

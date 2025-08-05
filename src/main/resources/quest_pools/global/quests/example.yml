@@ -44,8 +44,8 @@ tasks:
       regions:
         type: blacklist
         value: [ "spawn" ]
-      min-y-level: 0
-      max-y-level: 64
+      min-ylevel: 0
+      max-ylevel: 64
       hand:
         # Items that the player must be holding when the action happens
         # Only one of these needs to match

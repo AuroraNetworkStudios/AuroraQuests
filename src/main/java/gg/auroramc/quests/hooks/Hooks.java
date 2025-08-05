@@ -6,17 +6,19 @@ import gg.auroramc.quests.hooks.auroralevels.AuroraLevelsHook;
 import gg.auroramc.quests.hooks.citizens.CitizensHook;
 import gg.auroramc.quests.hooks.customfishing.CustomFishingHook;
 import gg.auroramc.quests.hooks.economyshopgui.EconomyShopGuiHook;
+import gg.auroramc.quests.hooks.excellentshop.ExcellentShopHook;
 import gg.auroramc.quests.hooks.fancynpcs.FancyNPCsHook;
 import gg.auroramc.quests.hooks.luckperms.LuckPermsHook;
 import gg.auroramc.quests.hooks.mmolib.MMOLibHook;
 import gg.auroramc.quests.hooks.mythicdungeons.DungeonsHook;
 import gg.auroramc.quests.hooks.mythicmobs.MythicHook;
-import gg.auroramc.quests.hooks.oraxen.OraxenHook;
+import gg.auroramc.quests.hooks.nexo.NexoHook;
 import gg.auroramc.quests.hooks.shopguiplus.ShopGUIPlusHook;
 import gg.auroramc.quests.hooks.shopkeepers.ShopkeepersHook;
 import gg.auroramc.quests.hooks.superiorskyblock.SuperiorSkyblockHook;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
-import gg.auroramc.quests.hooks.znpcs.ZnPcsHook;
+import gg.auroramc.quests.hooks.znpcs.ZnpcsHook;
+import gg.auroramc.quests.hooks.znpcsplus.ZnpcPlusHook;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -32,7 +34,6 @@ public enum Hooks {
     WORLD_GUARD(WorldGuardHook.class, "WorldGuard"),
     CITIZENS(CitizensHook.class, "Citizens"),
     SHOPKEEPERS(ShopkeepersHook.class, "Shopkeepers"),
-    ORAXEN(OraxenHook.class, "Oraxen"),
     MMOLIB(MMOLibHook.class, "MythicLib"),
     SHOP_GUI_PLUS(ShopGUIPlusHook.class, "ShopGUIPlus"),
     ECONOMY_SHOP_GUI(EconomyShopGuiHook.class, Set.of("EconomyShopGUI", "EconomyShopGUI-Premium")),
@@ -40,7 +41,10 @@ public enum Hooks {
     ADYESHACH(AdyeshachHook.class, "Adyeshach"),
     SUPERIOR_SKYBLOCK(SuperiorSkyblockHook.class, "SuperiorSkyblock2"),
     FANCY_NPCS(FancyNPCsHook .class, "FancyNpcs"),
-    ZNPCS(ZnPcsHook.class, "ServersNPC");
+    ZNPCS(ZnpcsHook.class, "ServersNPC"),
+    EXCELLENT_SHOP(ExcellentShopHook.class, "ExcellentShop"),
+    NEXO(NexoHook.class, "Nexo"),
+    ZNPCSPlus(ZnpcPlusHook.class, "ZNPCsPlus");
 
     private final Class<? extends Hook> clazz;
     private final Set<String> plugins;

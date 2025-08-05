@@ -1,7 +1,7 @@
 package gg.auroramc.quests.api.event;
 
 import gg.auroramc.quests.api.quest.Quest;
-import gg.auroramc.quests.api.quest.QuestPool;
+import gg.auroramc.quests.api.questpool.QuestPool;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

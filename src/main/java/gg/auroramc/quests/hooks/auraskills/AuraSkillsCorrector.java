@@ -29,7 +29,8 @@ public class AuraSkillsCorrector implements RewardCorrector {
         if (!force && !toLoad.contains(player.getUniqueId())) return;
         toLoad.remove(player.getUniqueId());
 
-        var manager = AuroraQuests.getInstance().getQuestManager();
+        var profile = AuroraQuests.getInstance().getProfileManager().getProfile(player);
+
         Map<Stat, Double> statMap = Maps.newHashMap();
 
         // Reset all stat modifiers first
@@ -38,15 +39,15 @@ public class AuraSkillsCorrector implements RewardCorrector {
         }
 
         // Gather new stat modifiers
-        for (var pool : manager.getQuestPools()) {
+        for (var pool : profile.getQuestPools()) {
             // Correct global quests
             if (pool.isGlobal()) {
                 for (var quest : pool.getQuests()) {
-                    if (!quest.isCompleted(player)) continue;
+                    if (!quest.isCompleted()) continue;
 
-                    for (var reward : quest.getRewards().values()) {
+                    for (var reward : quest.getDefinition().getRewards().values()) {
                         if (reward instanceof AuraSkillsStatReward statReward) {
-                            statMap.merge(statReward.getStat(), statReward.getValue(quest.getPlaceholders(player)), Double::sum);
+                            statMap.merge(statReward.getStat(), statReward.getValue(quest.getPlaceholders()), Double::sum);
                         }
                     }
                 }
@@ -54,12 +55,12 @@ public class AuraSkillsCorrector implements RewardCorrector {
 
             // Correct quest pool leveling
             if (!pool.hasLeveling()) continue;
-            var level = pool.getPlayerLevel(player);
+            var level = pool.getLevel();
 
             for (int i = 1; i < level + 1; i++) {
-                var matcher = pool.getMatcherManager().getBestMatcher(i);
+                var matcher = pool.getPool().getMatcherManager().getBestMatcher(i);
                 if (matcher == null) continue;
-                var placeholders = pool.getLevelPlaceholders(player, i);
+                var placeholders = pool.getLevelPlaceholders(i);
                 for (var reward : matcher.computeRewards(i)) {
                     if (reward instanceof AuraSkillsStatReward statReward) {
                         statMap.merge(statReward.getStat(), statReward.getValue(placeholders), Double::sum);

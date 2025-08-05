@@ -15,25 +15,31 @@ public class LuckPermsHook implements Hook {
     public void hook(AuroraQuests plugin) {
         this.plugin = plugin;
 
-        plugin.getQuestManager().getRewardFactory()
+        plugin.getPoolManager().getRewardFactory()
                 .registerRewardType(NamespacedId.fromDefault("permission"), PermissionReward.class);
 
-        plugin.getQuestManager().getRewardAutoCorrector()
+        plugin.getPoolManager().getRewardAutoCorrector()
                 .registerCorrector(NamespacedId.fromDefault("permission"), new PermissionCorrector());
 
         var lp = LuckPermsProvider.get();
 
         lp.getEventBus().subscribe(UserDataRecalculateEvent.class, this::onDataRecalculate);
 
-        AuroraQuests.logger().info("Hooked into LuckPerms for permission rewards and for permission start requirements");
+        AuroraQuests.logger().info("Hooked into LuckPerms for permission rewards and for permission start requirements.");
     }
 
     // Use synchronized since luckperms events are async and it likes to fire the event multiple times at once
     private synchronized void onDataRecalculate(UserDataRecalculateEvent event) {
         var player = Bukkit.getPlayer(event.getUser().getUniqueId());
         if (player != null) {
-            plugin.getQuestManager().tryUnlockQuestPools(player);
-            plugin.getQuestManager().tryStartGlobalQuests(player);
+            var profile = plugin.getProfileManager().getProfile(player);
+            if (profile != null) {
+                for (var pool : profile.getQuestPools()) {
+                    pool.unlock(false);
+                    pool.rollIfNecessary(true);
+                    pool.startQuests();
+                }
+            }
         }
     }
 }
