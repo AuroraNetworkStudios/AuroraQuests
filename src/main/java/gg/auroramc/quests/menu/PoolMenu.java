@@ -145,10 +145,13 @@ public class PoolMenu {
                 extraLore.addAll(quest.getDefinition().getLockedLore());
             }
 
+            var qPlaceholders = quest.getPlaceholders();
+
             var builder = ItemBuilder.of(quest.getDefinition().getMenuItem()).slot(slot)
-                    .setName(Placeholder.execute(quest.getDefinition().getMenuItem().getName(), Placeholder.of("{name}", config.getName()) ))
+                    .setName(Placeholder.execute(quest.getDefinition().getMenuItem().getName(), Placeholder.of("{name}", quest.getDefinition().getName())))
+                    .setLore(quest.getDefinition().getMenuItem().getLore().stream().map(l -> Placeholder.execute(l, qPlaceholders)).toList())
                     .localization(localization)
-                    .placeholder(quest.getPlaceholders()).extraLore(extraLore);
+                    .placeholder(qPlaceholders).extraLore(extraLore);
 
             if ((quest.isUnlocked() || !pool.isGlobal()) && !quest.isCompleted() && quest.getDefinition().getTasks().values().stream().anyMatch(t -> t.getTask().equals(ObjectiveType.TAKE_ITEM))) {
                 menu.addItem(builder.build(player), (e) -> {

@@ -131,7 +131,7 @@ tasks {
     }
     runServer {
         downloadPlugins {
-            modrinth("AuroraLib", "2.3.3")
+            //modrinth("AuroraLib", "2.3.3")
             hangar("PlaceholderAPI", "2.11.6")
             url("https://download.luckperms.net/1606/bukkit/loader/LuckPerms-Bukkit-5.5.17.jar")
         }
