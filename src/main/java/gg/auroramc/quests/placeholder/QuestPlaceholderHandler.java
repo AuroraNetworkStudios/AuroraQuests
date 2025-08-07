@@ -63,12 +63,12 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
             var pool = profile.getQuestPool(full.substring(0, full.length() - 15));
             if (pool == null) return null;
             if (pool.isGlobal()) return null;
-            return DurationFormatter.format(pool.getDurationUntilNextRoll(), DurationFormatter.Type.LONG);
+            return DurationFormatter.format(player, pool.getDurationUntilNextRoll(), DurationFormatter.Type.LONG);
         } else if (full.endsWith("countdown")) {
             var pool = profile.getQuestPool(full.substring(0, full.length() - 10));
             if (pool == null) return null;
             if (pool.isGlobal()) return null;
-            return DurationFormatter.format(pool.getDurationUntilNextRoll(), DurationFormatter.Type.SHORT);
+            return DurationFormatter.format(player, pool.getDurationUntilNextRoll(), DurationFormatter.Type.SHORT);
         }
 
         return null;

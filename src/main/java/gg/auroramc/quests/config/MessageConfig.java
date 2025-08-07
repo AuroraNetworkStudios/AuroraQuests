@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
@@ -45,6 +47,23 @@ public class MessageConfig extends AuroraConfig {
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));
+    }
+
+    public Map<String, String> toFlatMap() {
+        var map = new HashMap<String, String>();
+
+        for (var key : getRawConfig().getKeys(false)) {
+            if (key.equals("custom")) {
+                for (var customKey : getRawConfig().getConfigurationSection("custom").getKeys(true)) {
+                    map.put(customKey, getRawConfig().getString("custom." + customKey));
+                }
+            } else {
+                map.put(key, getRawConfig().getString(key));
+            }
+
+        }
+
+        return map;
     }
 
     private static File getFile(AuroraQuests plugin, String language) {

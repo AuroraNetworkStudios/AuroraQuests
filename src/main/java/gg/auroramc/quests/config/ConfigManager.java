@@ -1,11 +1,16 @@
 package gg.auroramc.quests.config;
 
 import com.google.common.collect.Maps;
+import gg.auroramc.aurora.Aurora;
+import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.localization.LocalizationProvider;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.questpool.PoolConfig;
 import gg.auroramc.quests.config.quest.QuestConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
@@ -22,10 +29,11 @@ import java.util.stream.Stream;
 public class ConfigManager {
     private final AuroraQuests plugin;
     private Config config;
-    private MessageConfig messageConfig;
+    private final Map<Locale, MessageConfig> messageConfigs = new HashMap<>();
     private MainMenuConfig mainMenuConfig;
     private CommonMenuConfig commonMenuConfig;
     private final Map<String, PoolConfig> questPools = Maps.newConcurrentMap();
+    private Locale defaultLocale;
 
     public ConfigManager(AuroraQuests plugin) {
         this.plugin = plugin;
@@ -38,9 +46,15 @@ public class ConfigManager {
         config = new Config(plugin);
         config.load();
 
-        MessageConfig.saveDefault(plugin, config.getLanguage());
-        messageConfig = new MessageConfig(plugin, config.getLanguage());
-        messageConfig.load();
+        defaultLocale = Locale.forLanguageTag(config.getLanguage());
+
+
+        for (var locale : Aurora.getLanguageProvider().getSupportedLocales()) {
+            MessageConfig.saveDefault(plugin, locale.getLanguage());
+            var messageConfig = new MessageConfig(plugin, locale.getLanguage());
+            messageConfig.load();
+            messageConfigs.put(locale, messageConfig);
+        }
 
         CommonMenuConfig.saveDefault(plugin);
         commonMenuConfig = new CommonMenuConfig(plugin);
@@ -55,6 +69,19 @@ public class ConfigManager {
         }
 
         reloadQuests();
+    }
+
+    public MessageConfig getMessageConfig(CommandSender sender) {
+        if (config.getUsePerPlayerLocale()) {
+            if (sender instanceof Player player) {
+                var locale = Aurora.getLanguageProvider().getPlayerLocale(player);
+                return messageConfigs.get(locale);
+            } else {
+                return messageConfigs.get(Aurora.getLanguageProvider().getFallbackLocale());
+            }
+        } else {
+            return messageConfigs.get(defaultLocale);
+        }
     }
 
     @SneakyThrows
