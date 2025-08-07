@@ -51,7 +51,7 @@ public class PoolMenu {
         var player = profile.getPlayer();
 
 
-        var menu = new AuroraMenu(player, mc.getTitle(), mc.getRows() * 9, false, localization, Placeholder.of("{name}", config.getName()));
+        var menu = new AuroraMenu(player, Placeholder.execute(mc.getTitle(), Placeholder.of("{name}", config.getName())), mc.getRows() * 9, false, localization, Placeholder.of("{name}", config.getName()));
 
         if (config.getMenu().getFiller().getEnabled()) {
             menu.addFiller(ItemBuilder.of(mc.getFiller().getItem()).localization(localization).toItemStack(player));
