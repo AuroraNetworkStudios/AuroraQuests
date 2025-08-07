@@ -52,7 +52,7 @@ public class Profile {
         }
 
         if (!rolledPools.isEmpty() && player.hasPlayedBefore()) {
-            var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getReRolledTarget();
+            var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig(player).getReRolledTarget();
             Chat.sendMessage(player, msg, Placeholder.of("{pool}", String.join(", ", rolledPools.stream().map(QuestPool::getName).toList())));
         }
 

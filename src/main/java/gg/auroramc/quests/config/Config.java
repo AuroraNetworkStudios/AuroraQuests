@@ -17,6 +17,7 @@ public class Config extends AuroraConfig {
     private Boolean debug = false;
     private Boolean purgeInvalidDataOnLogin = false;
     private String language = "en";
+    private Boolean usePerPlayerLocale = false;
     private Map<String, String> difficulties;
     private Boolean preventCreativeMode = false;
     private LeaderboardConfig leaderboards;
@@ -124,6 +125,10 @@ public class Config extends AuroraConfig {
                 (yaml) -> {
                     yaml.set("timer-format", null);
                     yaml.set("config-version", 3);
+                },
+                (yaml) -> {
+                    yaml.set("use-per-player-locale", false);
+                    yaml.set("config-version", 4);
                 }
         );
     }

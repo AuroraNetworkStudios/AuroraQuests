@@ -45,7 +45,7 @@ public class CommandManager {
             commandManager.getCommandReplacements().addReplacement("questsAlias", a(aliases.getQuests()));
         }
 
-        var msg = plugin.getConfigManager().getMessageConfig();
+        var msg = plugin.getConfigManager().getMessageConfig(null);
         commandManager.getLocales().addMessage(Locale.ENGLISH, MinecraftMessageKeys.NO_PLAYER_FOUND, m(msg.getPlayerNotFound()));
         commandManager.getLocales().addMessage(Locale.ENGLISH, MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE, m(msg.getPlayerNotFound()));
         commandManager.getLocales().addMessage(Locale.ENGLISH, MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, m(msg.getPlayerNotFound()));

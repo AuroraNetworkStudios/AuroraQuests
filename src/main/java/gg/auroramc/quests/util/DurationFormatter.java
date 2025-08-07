@@ -2,6 +2,7 @@ package gg.auroramc.quests.util;
 
 
 import gg.auroramc.quests.AuroraQuests;
+import org.bukkit.command.CommandSender;
 
 import java.time.Duration;
 
@@ -16,8 +17,8 @@ public class DurationFormatter {
         SHORT
     }
 
-    public static String format(Duration duration, Type type) {
-        var config = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getTimerFormat();
+    public static String format(CommandSender sender, Duration duration, Type type) {
+        var config = AuroraQuests.getInstance().getConfigManager().getMessageConfig(sender).getTimerFormat();
         var format = type == Type.LONG ? config.getLongFormat() : config.getShortFormat();
 
         long seconds = duration.getSeconds();
