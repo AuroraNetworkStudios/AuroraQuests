@@ -17,7 +17,7 @@ public class DurationFormatter {
     }
 
     public static String format(Duration duration, Type type) {
-        var config = AuroraQuests.getInstance().getConfigManager().getConfig().getTimerFormat();
+        var config = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getTimerFormat();
         var format = type == Type.LONG ? config.getLongFormat() : config.getShortFormat();
 
         long seconds = duration.getSeconds();

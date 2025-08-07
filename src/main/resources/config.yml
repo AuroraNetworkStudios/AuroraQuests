@@ -1,5 +1,5 @@
 # Don't touch this
-config-version: 2
+config-version: 3
 
 debug: false
 language: en
@@ -72,31 +72,3 @@ level-up-sound:
   sound: "entity.player.levelup"
   volume: 1
   pitch: 1
-
-timer-format:
-  short-format:
-    plural:
-      weeks: "{value}w"
-      days: "{value}d"
-      hours: "{value}h"
-      minutes: "{value}m"
-      seconds: "{value}s"
-    singular:
-      weeks: "{value}w"
-      days: "{value}d"
-      hours: "{value}h"
-      minutes: "{value}m"
-      seconds: "{value}s"
-  long-format:
-    plural:
-      weeks: "{value} weeks"
-      days: "{value} days"
-      hours: "{value} hours"
-      minutes: "{value} minutes"
-      seconds: "{value} seconds"
-    singular:
-      weeks: "{value} week"
-      days: "{value} day"
-      hours: "{value} hour"
-      minutes: "{value} minute"
-      seconds: "{value} second"

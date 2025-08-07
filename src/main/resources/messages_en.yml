@@ -1,5 +1,5 @@
 # Don't touch this
-config-version: 3
+config-version: 4
 
 reloaded: "&aReloaded configuration!"
 data-not-loaded-yet: "&cData for this player hasn't loaded yet, try again later!"
@@ -24,3 +24,33 @@ quest-completed: "&aQuest {quest} marked completed for {player}."
 quest-already-completed: "&cPlayer {player} has already completed quest {quest}."
 quest-reset: "&aQuest {quest} reset for {player}."
 error-prefix: "&cError: {message}"
+
+timer-format:
+  short-format:
+    plural:
+      weeks: "{value}w"
+      days: "{value}d"
+      hours: "{value}h"
+      minutes: "{value}m"
+      seconds: "{value}s"
+    singular:
+      weeks: "{value}w"
+      days: "{value}d"
+      hours: "{value}h"
+      minutes: "{value}m"
+      seconds: "{value}s"
+  long-format:
+    plural:
+      weeks: "{value} weeks"
+      days: "{value} days"
+      hours: "{value} hours"
+      minutes: "{value} minutes"
+      seconds: "{value} seconds"
+    singular:
+      weeks: "{value} week"
+      days: "{value} day"
+      hours: "{value} hour"
+      minutes: "{value} minute"
+      seconds: "{value} second"
+
+custom: { }
