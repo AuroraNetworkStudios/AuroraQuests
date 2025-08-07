@@ -101,6 +101,7 @@ public class MainMenu {
             }
 
             menu.addItem(ItemBuilder.of(mi.getItem())
+                    .setName(Placeholder.execute(mi.getItem().getName(), Placeholder.of("{name}", pool.getDefinition().getName())))
                     .localization(localization)
                     .extraLore(lore)
                     .placeholder(Placeholder.of("{name}", pool.getDefinition().getName()))
