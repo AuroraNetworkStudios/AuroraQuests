@@ -72,7 +72,7 @@ public class ConfigManager {
     }
 
     public MessageConfig getMessageConfig(CommandSender sender) {
-        if (config.getUsePerPlayerLocale()) {
+        if (config.getPerPlayerLocale()) {
             if (sender instanceof Player player) {
                 var locale = Aurora.getLanguageProvider().getPlayerLocale(player);
                 return messageConfigs.get(locale);
