@@ -34,20 +34,22 @@ public class MainMenu {
     }
 
     private AuroraMenu createMenu() {
+        var localization = AuroraQuests.getInstance().getLocalizationProvider();
+
         var config = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
         var cmf = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
         var player = profile.getPlayer();
 
-        var menu = new AuroraMenu(player, config.getTitle(), config.getMenuRows() * 9, false);
+        var menu = new AuroraMenu(player, config.getTitle(), config.getMenuRows() * 9, false, localization);
 
         if (config.getFiller().getEnabled()) {
-            menu.addFiller(ItemBuilder.of(config.getFiller().getItem()).toItemStack(player));
+            menu.addFiller(ItemBuilder.of(config.getFiller().getItem()).localization(localization).toItemStack(player));
         } else {
             menu.addFiller(ItemBuilder.filler(Material.AIR));
         }
 
         if (config.getHasCloseButton()) {
-            menu.addItem(ItemBuilder.close(merge(cmf, config, "close")).build(player), (e) -> {
+            menu.addItem(ItemBuilder.close(merge(cmf, config, "close")).localization(localization).build(player), (e) -> {
                 player.closeInventory();
             });
         }
@@ -99,6 +101,7 @@ public class MainMenu {
             }
 
             menu.addItem(ItemBuilder.of(mi.getItem())
+                    .localization(localization)
                     .extraLore(lore)
                     .placeholder(Placeholder.of("{name}", pool.getDefinition().getName()))
                     .placeholder(Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount())))
@@ -111,7 +114,7 @@ public class MainMenu {
         }
 
         for (var customItem : config.getCustomItems().values()) {
-            menu.addItem(ItemBuilder.of(customItem).build(player));
+            menu.addItem(ItemBuilder.of(customItem).localization(localization).build(player));
         }
 
         if (maxPage > 1) {
@@ -121,16 +124,16 @@ public class MainMenu {
                     Placeholder.of("{total}", maxPage)
             );
 
-            menu.addItem(ItemBuilder.of(merge(cmf, config, "previous-page")).placeholder(placeholders).build(player), (e) -> {
+            menu.addItem(ItemBuilder.of(merge(cmf, config, "previous-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
                 if (page > 1) {
                     page--;
                     createMenu().open();
                 }
             });
 
-            menu.addItem(ItemBuilder.of(merge(cmf, config, "current-page")).placeholder(placeholders).build(player));
+            menu.addItem(ItemBuilder.of(merge(cmf, config, "current-page")).localization(localization).placeholder(placeholders).build(player));
 
-            menu.addItem(ItemBuilder.of(merge(cmf, config, "next-page")).placeholder(placeholders).build(player), (e) -> {
+            menu.addItem(ItemBuilder.of(merge(cmf, config, "next-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
                 if (page < maxPage) {
                     page++;
                     createMenu().open();

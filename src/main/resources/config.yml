@@ -1,8 +1,9 @@
 # Don't touch this
-config-version: 3
+config-version: 4
 
 debug: false
 language: en
+per-player-locale: false
 prevent-creative-mode: true
 
 # Only enable this if you are heavily modifying your quest pools/quests data in production (WHICH YOU SHOULDN'T)
