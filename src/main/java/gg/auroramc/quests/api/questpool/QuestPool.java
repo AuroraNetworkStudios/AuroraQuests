@@ -248,8 +248,9 @@ public class QuestPool {
 
         if (sendNotification) {
             var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig(profile.getPlayer()).getReRolledTarget();
-            var placholder = Placeholder.of("{pool}", definition.getName());
-            Chat.sendMessage(profile.getPlayer(), AuroraQuests.getInstance().getLocalizationProvider().fillVariables(profile.getPlayer(), Placeholder.execute(msg, placholder)), placholder);
+            var placeholder = Placeholder.of("{pool}", definition.getName());
+            msg = Placeholder.execute(msg, placeholder);
+            Chat.sendMessage(profile.getPlayer(), AuroraQuests.getInstance().getLocalizationProvider().fillVariables(profile.getPlayer(), msg), placeholder);
         }
     }
 

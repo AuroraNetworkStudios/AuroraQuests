@@ -52,8 +52,10 @@ public class Profile {
         }
 
         if (!rolledPools.isEmpty() && player.hasPlayedBefore()) {
+            var placeholder = Placeholder.of("{pool}", String.join(", ", rolledPools.stream().map(QuestPool::getName).toList()));
             var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig(player).getReRolledTarget();
-            Chat.sendMessage(player, msg, Placeholder.of("{pool}", String.join(", ", rolledPools.stream().map(QuestPool::getName).toList())));
+            msg = Placeholder.execute(msg, placeholder);
+            Chat.sendMessage(player, AuroraQuests.getInstance().getLocalizationProvider().fillVariables(player, msg), placeholder);
         }
 
         if (AuroraQuests.getInstance().getConfigManager().getConfig().getPurgeInvalidDataOnLogin()) {
