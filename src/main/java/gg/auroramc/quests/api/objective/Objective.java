@@ -95,6 +95,9 @@ public abstract class Objective extends EventBus {
     }
 
     protected void asyncInterval(Runnable runnable, int delay, int interval) {
+        if (tasks == null) {
+            tasks = new ArrayList<>();
+        }
         var task = Bukkit.getAsyncScheduler().runAtFixedRate(AuroraQuests.getInstance(), (t) -> {
             runnable.run();
         }, delay * 50L, interval * 50L, TimeUnit.MILLISECONDS);
