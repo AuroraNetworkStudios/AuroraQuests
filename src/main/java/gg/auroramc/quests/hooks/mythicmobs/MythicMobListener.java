@@ -20,7 +20,7 @@ public class MythicMobListener implements Listener {
         var drops = e.getDrops();
         var typeId = new TypeId("mythicmobs", mobName);
 
-        if (e.getMob().getLevel() > 0) {
+        if (e.getMob().getLevel() > 1) {
             Bukkit.getPluginManager().callEvent(new PlayerKillMobEvent(player, typeId, 1, e.getMob().getLevel()));
         }
 
