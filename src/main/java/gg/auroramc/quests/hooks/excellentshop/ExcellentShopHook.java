@@ -13,6 +13,8 @@ import su.nightexpress.nexshop.api.shop.event.ShopTransactionEvent;
 import su.nightexpress.nexshop.api.shop.type.TradeType;
 
 public class ExcellentShopHook implements Hook, Listener {
+    private static Boolean hasGetCurrencyMethod = null;
+
     @Override
     public void hook(AuroraQuests plugin) {
         AuroraQuests.logger().info("Hooked into ExcellentShop for BUY_WORTH and SELL_WORTH objectives.");
@@ -24,10 +26,30 @@ public class ExcellentShopHook implements Hook, Listener {
         if (transaction.getResult() == Transaction.Result.FAILURE) return;
         var price = transaction.getPrice() * transaction.getAmount();
 
+        String currencyName = null;
+
+        if (hasGetCurrencyMethod(transaction)) {
+            currencyName = transaction.getCurrency().getName();
+        }
+
         if (transaction.getTradeType() == TradeType.BUY) {
-            Bukkit.getPluginManager().callEvent(new PlayerSpendOnPurchaseEvent(event.getPlayer(), price, transaction.getCurrency().getName()));
+            Bukkit.getPluginManager().callEvent(new PlayerSpendOnPurchaseEvent(event.getPlayer(), price, currencyName));
         } else {
-            Bukkit.getPluginManager().callEvent(new PlayerEarnFromSellEvent(event.getPlayer(), price, transaction.getCurrency().getName()));
+            Bukkit.getPluginManager().callEvent(new PlayerEarnFromSellEvent(event.getPlayer(), price, currencyName));
+        }
+    }
+
+    private static boolean hasGetCurrencyMethod(Object obj) {
+        if (hasGetCurrencyMethod != null) {
+            return hasGetCurrencyMethod;
+        }
+        try {
+            obj.getClass().getMethod("getCurrency");
+            hasGetCurrencyMethod = true;
+            return true;
+        } catch (NoSuchMethodException e) {
+            hasGetCurrencyMethod = false;
+            return false;
         }
     }
 }
