@@ -7,6 +7,7 @@ import gg.auroramc.quests.api.objective.ObjectiveDefinition;
 import gg.auroramc.quests.api.objective.TypedObjective;
 import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.api.quest.Quest;
+import gg.auroramc.quests.util.AnnoyingPluginUtil;
 import org.bukkit.Material;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDropItemEvent;
@@ -31,7 +32,7 @@ public class BlockLootObjective extends TypedObjective {
 
     @Override
     protected void activate() {
-        onEvent(BlockDropItemEvent.class, this::onBlockDrop, EventPriority.MONITOR);
+        onEvent(BlockDropItemEvent.class, this::onBlockDrop, AnnoyingPluginUtil.getBlockDropItemPriority());
         onEvent(PlayerLootEvent.class, this::handleCustomLoot, EventPriority.MONITOR);
     }
 

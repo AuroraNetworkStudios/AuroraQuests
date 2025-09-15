@@ -7,6 +7,7 @@ import gg.auroramc.quests.api.objective.ObjectiveDefinition;
 import gg.auroramc.quests.api.objective.TypedObjective;
 import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.api.quest.Quest;
+import gg.auroramc.quests.util.AnnoyingPluginUtil;
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.EventPriority;
@@ -34,7 +35,7 @@ public class FarmingObjective extends TypedObjective {
     protected void activate() {
         onEvent(PlayerHarvestBlockEvent.class, this::onPlayerHarvest, EventPriority.MONITOR);
         onEvent(RegionBlockBreakEvent.class, this::onBlockBreak, EventPriority.MONITOR);
-        onEvent(BlockDropItemEvent.class, this::onBlockDrop, EventPriority.MONITOR);
+        onEvent(BlockDropItemEvent.class, this::onBlockDrop, AnnoyingPluginUtil.getBlockDropItemPriority());
         onEvent(PlayerLootEvent.class, this::handleCustomLoot, EventPriority.MONITOR);
 
     }
