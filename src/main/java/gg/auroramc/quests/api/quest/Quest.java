@@ -104,8 +104,11 @@ public class Quest extends EventBus {
     public boolean start(boolean force) {
         if (started) return false;
 
-        if (!force && !definition.getRequirements().canStart(data)) {
-            return false;
+        // For timed random quests, once they are rolled, they should always start
+        if (pool.isGlobal()) {
+            if (!force && !definition.getRequirements().canStart(data)) {
+                return false;
+            }
         }
 
         for (var obj : objectives) {
