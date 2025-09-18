@@ -22,7 +22,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "2.0.3"
+version = "2.0.4"
 
 repositories {
     flatDir {
@@ -131,7 +131,7 @@ tasks {
             hangar("PlaceholderAPI", "2.11.6")
             url("https://download.luckperms.net/1593/bukkit/loader/LuckPerms-Bukkit-5.5.8.jar")
         }
-        minecraftVersion("1.21.5")
+        minecraftVersion("1.21.8")
     }
 }
 

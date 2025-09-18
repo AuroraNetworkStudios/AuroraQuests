@@ -37,8 +37,8 @@ public class AuraSkillsListener implements Listener {
         switch (e.getCause()) {
             case FARMING_LUCK, FARMING_OTHER_LOOT ->
                     Bukkit.getPluginManager().callEvent(new PlayerLootEvent(e.getPlayer(), typeId, item.getAmount(), PlayerLootEvent.Source.FARM));
-            case FISHING_LUCK, TREASURE_HUNTER, EPIC_CATCH, FISHING_OTHER_LOOT ->
-                    Bukkit.getPluginManager().callEvent(new PlayerCaughtFishEvent(e.getPlayer(), typeId, item.getAmount(), e.getLocation()));
+            // case FISHING_LUCK, TREASURE_HUNTER, EPIC_CATCH, FISHING_OTHER_LOOT ->
+                    // Bukkit.getPluginManager().callEvent(new PlayerCaughtFishEvent(e.getPlayer(), typeId, item.getAmount(), e.getLocation()));
             case FORAGING_LUCK, FORAGING_OTHER_LOOT, MINING_LUCK, EXCAVATION_OTHER_LOOT, LUCKY_SPADES,
                  MINING_OTHER_LOOT, EXCAVATION_LUCK, METAL_DETECTOR ->
                     Bukkit.getPluginManager().callEvent(new PlayerLootEvent(e.getPlayer(), typeId, item.getAmount(), PlayerLootEvent.Source.BLOCK));
