@@ -74,8 +74,9 @@ dependencies {
     compileOnly("de.oliver:FancyNpcs:2.6.0")
     compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
     compileOnly("com.nexomc:nexo:1.8.0")
-    compileOnly("su.nightexpress.excellentshop:Core:4.17.4")
-    compileOnly("su.nightexpress.economybridge:economy-bridge:1.2.1")
+    compileOnly("su.nightexpress.excellentshop:Core:4.20.0") {
+        exclude(group = "com.github.Xyness", module = "SimpleClaimSystem")
+    }
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")
