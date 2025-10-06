@@ -7,11 +7,9 @@ import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.profile.Profile;
-import gg.auroramc.quests.api.questpool.Pool;
 import gg.auroramc.quests.api.questpool.QuestPool;
 import gg.auroramc.quests.util.RomanNumber;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -132,7 +130,7 @@ public class LevelMenu {
 
             var builder = ItemBuilder.of(itemConfig).slot(slot)
                     .localization(localization)
-                    .loreCompute(() -> lore.stream().map(l -> Text.component(player, localization.fillVariables(player, l), rPlaceholders)).toList())
+                    .loreCompute(() -> lore.stream().map(l -> Text.component(player, localization.fillVariables(player, l, rPlaceholders))).toList())
                     .placeholder(rPlaceholders);
 
             if (cm.getAllowItemAmounts()) {

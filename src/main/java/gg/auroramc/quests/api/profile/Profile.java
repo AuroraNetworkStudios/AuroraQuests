@@ -55,7 +55,7 @@ public class Profile {
             var placeholder = Placeholder.of("{pool}", String.join(", ", rolledPools.stream().map(QuestPool::getName).toList()));
             var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig(player).getReRolledTarget();
             msg = Placeholder.execute(msg, placeholder);
-            Chat.sendMessage(player, AuroraQuests.getInstance().getLocalizationProvider().fillVariables(player, msg), placeholder);
+            Chat.sendMessage(player, AuroraQuests.getInstance().getLocalizationProvider().fillVariables(player, msg, placeholder));
         }
 
         if (AuroraQuests.getInstance().getConfigManager().getConfig().getPurgeInvalidDataOnLogin()) {

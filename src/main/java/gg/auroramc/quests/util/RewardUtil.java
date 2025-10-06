@@ -19,20 +19,17 @@ public class RewardUtil {
         for (var line : lines) {
             if (line.equals("component:rewards")) {
                 if (!rewards.isEmpty()) {
-                    text.append(Text.component(player, localization.fillVariables(player, config.getTitle()), placeholders));
+                    text.append(Text.component(player, localization.fillVariables(player, config.getTitle(), placeholders)));
                 }
                 for (var reward : rewards) {
                     var rewardText = reward.getDisplay(player, placeholders);
                     if (rewardText.isBlank()) continue;
                     text.append(Component.newline());
                     var display = config.getLine().replace("{reward}", rewardText);
-                    text.append(Text.component(player, localization.fillVariables(player, display), placeholders));
+                    text.append(Text.component(player, localization.fillVariables(player, display, placeholders)));
                 }
             } else {
-                text.append(Text.component(player,
-                        // This might look like a lot of extra work, but there are situations when it is needed.
-                        localization.fillVariables(player, Placeholder.execute(localization.fillVariables(player, line), placeholders)),
-                        placeholders));
+                text.append(Text.component(player, localization.fillVariables(player, line, placeholders)));
             }
 
             if (!line.equals(lines.getLast())) text.append(Component.newline());
