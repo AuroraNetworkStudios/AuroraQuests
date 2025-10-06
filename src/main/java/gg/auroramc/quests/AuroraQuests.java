@@ -94,7 +94,7 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        localizationProvider = new LocalizationProvider(Aurora.getLanguageProvider());
+        localizationProvider = new LocalizationProvider(Aurora.getLanguageProvider(), configManager.getConfig().getPerPlayerLocale());
 
         for (var msg : configManager.getMessageConfigs().entrySet()) {
             localizationProvider.setLocaleValues(msg.getKey(), msg.getValue().toFlatMap());
