@@ -28,7 +28,6 @@ public class Config extends AuroraConfig {
     private CommandAliasConfig commandAliases;
     private List<String> sortOrder;
     private UnlockTaskConfig unlockTask = new UnlockTaskConfig();
-    private TimerFormatConfig timerFormat = new TimerFormatConfig();
 
     @IgnoreField
     private Map<String, Integer> sortOderMap;
@@ -45,27 +44,6 @@ public class Config extends AuroraConfig {
 
     public Config(AuroraQuests plugin) {
         super(getFile(plugin));
-    }
-
-    @Getter
-    public static final class TimerFormatConfig {
-        private DurationFormatConfig shortFormat = new DurationFormatConfig();
-        private DurationFormatConfig longFormat = new DurationFormatConfig();
-    }
-
-    @Getter
-    public static final class DurationFormatConfig {
-        private DurationConfig plural = new DurationConfig();
-        private DurationConfig singular = new DurationConfig();
-    }
-
-    @Getter
-    public static final class DurationConfig {
-        private String weeks = "{value}w";
-        private String days = "{value}d";
-        private String hours = "{value}h";
-        private String minutes = "{value}m";
-        private String seconds = "{value}s";
     }
 
     @Getter
@@ -142,6 +120,10 @@ public class Config extends AuroraConfig {
                     yaml.set("quest-complete-sound.sound", "entity.player.levelup");
 
                     yaml.set("config-version", 2);
+                },
+                (yaml) -> {
+                    yaml.set("timer-format", null);
+                    yaml.set("config-version", 3);
                 }
         );
     }

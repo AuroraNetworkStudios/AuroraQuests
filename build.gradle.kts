@@ -22,7 +22,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "2.0.4"
+version = "2.1.0-SNAPSHOT"
 
 repositories {
     flatDir {
@@ -32,6 +32,7 @@ repositories {
     mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.auroramc.gg/releases/")
+    maven("https://repo.auroramc.gg/snapshots/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
@@ -49,7 +50,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:2.1.6")
+    compileOnly("gg.auroramc:Aurora:2.4.0-SNAPSHOT")
     compileOnly("gg.auroramc:AuroraLevels:1.6.2")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.2.0")
