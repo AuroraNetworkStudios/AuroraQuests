@@ -3,6 +3,7 @@ package gg.auroramc.quests.config;
 import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.quests.AuroraQuests;
 import lombok.Getter;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -15,6 +16,7 @@ import java.util.function.Consumer;
 @Getter
 public class MessageConfig extends AuroraConfig {
 
+    private String prefix = "";
     private String reloaded = "&aReloaded configuration!";
     private String dataNotLoadedYet = "&cData for this player hasn't loaded yet, try again later!";
     private String dataNotLoadedYetSelf = "&cYour data isn't loaded yet, please try again later!";
@@ -38,6 +40,8 @@ public class MessageConfig extends AuroraConfig {
     private String questAlreadyUnlocked = "&cPlayer {player} has already unlocked quest {quest}.";
     private String questAlreadyCompleted = "&cPlayer {player} has already completed quest {quest}.";
     private String errorPrefix = "&cError: {message}";
+    private TimerFormatConfig timerFormat = new TimerFormatConfig();
+    private ConfigurationSection custom;
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));
@@ -67,6 +71,27 @@ public class MessageConfig extends AuroraConfig {
         }
     }
 
+    @Getter
+    public static final class TimerFormatConfig {
+        private DurationFormatConfig shortFormat = new DurationFormatConfig();
+        private DurationFormatConfig longFormat = new DurationFormatConfig();
+    }
+
+    @Getter
+    public static final class DurationFormatConfig {
+        private DurationConfig plural = new DurationConfig();
+        private DurationConfig singular = new DurationConfig();
+    }
+
+    @Getter
+    public static final class DurationConfig {
+        private String weeks = "{value}w";
+        private String days = "{value}d";
+        private String hours = "{value}h";
+        private String minutes = "{value}m";
+        private String seconds = "{value}s";
+    }
+
     @Override
     protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
         return List.of(
@@ -85,6 +110,50 @@ public class MessageConfig extends AuroraConfig {
                 (yaml) -> {
                     yaml.set("quest-reset", "&aQuest {quest} reset for {player}.");
                     yaml.set("config-version", 3);
+                },
+                (yaml) -> {
+                    yaml.set("prefix", "");
+                    var timer = yaml.createSection("timer-format");
+                    // Short
+                    var shortFormat = timer.createSection("short-format");
+                    // Short plural
+                    var shortPlural = shortFormat.createSection("plural");
+                    shortPlural.set("weeks", "{value}w");
+                    shortPlural.set("days", "{value}d");
+                    shortPlural.set("hours", "{value}h");
+                    shortPlural.set("minutes", "{value}m");
+                    shortPlural.set("seconds", "{value}s");
+                    // Short singular
+                    var shortSingular = shortFormat.createSection("singular");
+                    shortSingular.set("weeks", "{value}w");
+                    shortSingular.set("days", "{value}d");
+                    shortSingular.set("hours", "{value}h");
+                    shortSingular.set("minutes", "{value}m");
+                    shortSingular.set("seconds", "{value}s");
+
+
+                    // Long
+                    var longFormat = timer.createSection("long-format");
+                    // Long plural
+                    var longPlural = longFormat.createSection("plural");
+                    longPlural.set("weeks", "{value} weeks");
+                    longPlural.set("days", "{value} days");
+                    longPlural.set("hours", "{value} hours");
+                    longPlural.set("minutes", "{value} minutes");
+                    longPlural.set("seconds", "{value} seconds");
+                    // Long singular
+                    var longSingular = longFormat.createSection("singular");
+                    longSingular.set("weeks", "{value} week");
+                    longSingular.set("days", "{value} day");
+                    longSingular.set("hours", "{value} hour");
+                    longSingular.set("minutes", "{value} minute");
+                    longSingular.set("seconds", "{value} second");
+
+                    yaml.set("timer-format", timer);
+
+                    yaml.set("custom", yaml.createSection("custom"));
+
+                    yaml.set("config-version", 4);
                 }
         );
     }
