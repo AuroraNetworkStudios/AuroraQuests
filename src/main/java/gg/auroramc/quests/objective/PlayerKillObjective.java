@@ -4,10 +4,9 @@ import gg.auroramc.quests.api.objective.ObjectiveDefinition;
 import gg.auroramc.quests.api.objective.StringTypedObjective;
 import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.api.quest.Quest;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class PlayerKillObjective extends StringTypedObjective {
 
@@ -17,14 +16,14 @@ public class PlayerKillObjective extends StringTypedObjective {
 
     @Override
     protected void activate() {
-        onEvent(EntityDeathEvent.class, this::handle, EventPriority.MONITOR);
+        onEvent(PlayerDeathEvent.class, this::handle, EventPriority.MONITOR);
     }
 
-    public void handle(EntityDeathEvent event) {
+    public void handle(PlayerDeathEvent event) {
         if (event.getEntity().getKiller() != data.profile().getPlayer()) return;
-        Entity mob = event.getEntity();
+        Player victim = event.getEntity();
 
-        if (!(mob instanceof Player victim) || mob == data.profile().getPlayer()) {
+        if (victim == data.profile().getPlayer()) {
             return;
         }
 
