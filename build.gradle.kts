@@ -63,7 +63,9 @@ dependencies {
     //compileOnly("com.nisovin.shopkeepers:ShopkeepersAPI:2.23.3")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.2")
     compileOnly("io.th0rgal:oraxen:1.179.0")
-    compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
+    compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0") {
+        exclude(group = "org.spigotmc", module = "spigot-api")
+    }
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     compileOnly(name = "MythicDungeons-2.0.0-SNAPSHOT", group = "net.playavalon", version = "2.0.0-SNAPSHOT")
     compileOnly(name = "znpcs-5.0", group = "io.github.gonalez.znpcs", version = "5.0")
@@ -130,9 +132,9 @@ tasks {
         downloadPlugins {
             modrinth("AuroraLib", "2.3.3")
             hangar("PlaceholderAPI", "2.11.6")
-            url("https://download.luckperms.net/1593/bukkit/loader/LuckPerms-Bukkit-5.5.8.jar")
+            url("https://download.luckperms.net/1606/bukkit/loader/LuckPerms-Bukkit-5.5.17.jar")
         }
-        minecraftVersion("1.21.8")
+        minecraftVersion("1.21.10")
     }
 }
 
