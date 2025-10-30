@@ -17,6 +17,7 @@ public class Config extends AuroraConfig {
     private Boolean debug = false;
     private Boolean purgeInvalidDataOnLogin = false;
     private String language = "en";
+    private Boolean perPlayerLocale = false;
     private Map<String, String> difficulties;
     private Boolean preventCreativeMode = false;
     private LeaderboardConfig leaderboards;
@@ -28,7 +29,6 @@ public class Config extends AuroraConfig {
     private CommandAliasConfig commandAliases;
     private List<String> sortOrder;
     private UnlockTaskConfig unlockTask = new UnlockTaskConfig();
-    private TimerFormatConfig timerFormat = new TimerFormatConfig();
 
     @IgnoreField
     private Map<String, Integer> sortOderMap;
@@ -45,27 +45,6 @@ public class Config extends AuroraConfig {
 
     public Config(AuroraQuests plugin) {
         super(getFile(plugin));
-    }
-
-    @Getter
-    public static final class TimerFormatConfig {
-        private DurationFormatConfig shortFormat = new DurationFormatConfig();
-        private DurationFormatConfig longFormat = new DurationFormatConfig();
-    }
-
-    @Getter
-    public static final class DurationFormatConfig {
-        private DurationConfig plural = new DurationConfig();
-        private DurationConfig singular = new DurationConfig();
-    }
-
-    @Getter
-    public static final class DurationConfig {
-        private String weeks = "{value}w";
-        private String days = "{value}d";
-        private String hours = "{value}h";
-        private String minutes = "{value}m";
-        private String seconds = "{value}s";
     }
 
     @Getter
@@ -142,6 +121,14 @@ public class Config extends AuroraConfig {
                     yaml.set("quest-complete-sound.sound", "entity.player.levelup");
 
                     yaml.set("config-version", 2);
+                },
+                (yaml) -> {
+                    yaml.set("timer-format", null);
+                    yaml.set("config-version", 3);
+                },
+                (yaml) -> {
+                    yaml.set("per-player-locale", false);
+                    yaml.set("config-version", 4);
                 }
         );
     }

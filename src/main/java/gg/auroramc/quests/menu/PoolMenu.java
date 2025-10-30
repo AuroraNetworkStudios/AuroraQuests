@@ -43,16 +43,18 @@ public class PoolMenu {
     }
 
     private AuroraMenu createMenu() {
+        var localization = AuroraQuests.getInstance().getLocalizationProvider();
+
         var config = pool.getPool().getDefinition();
         var mc = config.getMenu();
         var cmf = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
         var player = profile.getPlayer();
 
 
-        var menu = new AuroraMenu(player, mc.getTitle(), mc.getRows() * 9, false, Placeholder.of("{name}", config.getName()));
+        var menu = new AuroraMenu(player, Placeholder.execute(mc.getTitle(), Placeholder.of("{name}", config.getName())), mc.getRows() * 9, false, localization, Placeholder.of("{name}", config.getName()));
 
         if (config.getMenu().getFiller().getEnabled()) {
-            menu.addFiller(ItemBuilder.of(mc.getFiller().getItem()).toItemStack(player));
+            menu.addFiller(ItemBuilder.of(mc.getFiller().getItem()).localization(localization).toItemStack(player));
         } else {
             menu.addFiller(ItemBuilder.filler(Material.AIR));
         }
@@ -87,6 +89,7 @@ public class PoolMenu {
 
         for (var customItem : config.getMenu().getCustomItems().values()) {
             menu.addItem(ItemBuilder.of(customItem)
+                    .localization(localization)
                     .placeholder(totalCompletedPlaceholder)
                     .placeholder(Placeholder.of("{name}", config.getName()))
                     .placeholder(levelPlaceholder)
@@ -100,7 +103,7 @@ public class PoolMenu {
         if (mc.getHasCloseButton()) {
             var closeConfig = cmf.getItems().get("close").merge(mc.getItems().get("close"));
 
-            menu.addItem(ItemBuilder.close(closeConfig).build(player), (e) -> {
+            menu.addItem(ItemBuilder.close(closeConfig).localization(localization).build(player), (e) -> {
                 player.closeInventory();
             });
         }
@@ -108,7 +111,7 @@ public class PoolMenu {
         if (mc.getHasBackButton()) {
             var backConfig = cmf.getItems().get("back").merge(mc.getItems().get("back"));
 
-            menu.addItem(ItemBuilder.back(backConfig).build(player), (e) -> {
+            menu.addItem(ItemBuilder.back(backConfig).localization(localization).build(player), (e) -> {
                 if (backAction != null) {
                     backAction.run();
                 } else {
@@ -142,8 +145,13 @@ public class PoolMenu {
                 extraLore.addAll(quest.getDefinition().getLockedLore());
             }
 
+            var qPlaceholders = quest.getPlaceholders();
+
             var builder = ItemBuilder.of(quest.getDefinition().getMenuItem()).slot(slot)
-                    .placeholder(quest.getPlaceholders()).extraLore(extraLore);
+                    .setName(Placeholder.execute(quest.getDefinition().getMenuItem().getName(), Placeholder.of("{name}", quest.getDefinition().getName())))
+                    .setLore(quest.getDefinition().getMenuItem().getLore().stream().map(l -> Placeholder.execute(l, qPlaceholders)).toList())
+                    .localization(localization)
+                    .placeholder(qPlaceholders).extraLore(extraLore);
 
             if ((quest.isUnlocked() || !pool.isGlobal()) && !quest.isCompleted() && quest.getDefinition().getTasks().values().stream().anyMatch(t -> t.getTask().equals(ObjectiveType.TAKE_ITEM))) {
                 menu.addItem(builder.build(player), (e) -> {
@@ -161,6 +169,7 @@ public class PoolMenu {
             List<Placeholder<?>> placeholders = List.of(Placeholder.of("{current}", page + 1), Placeholder.of("{max}", pageCount + 1));
 
             menu.addItem(ItemBuilder.of(cmf.getItems().get("previous-page").merge(mc.getItems().get("previous-page")))
+                    .localization(localization)
                     .placeholder(placeholders).build(player), (e) -> {
                 if (page > 0) {
                     page--;
@@ -169,9 +178,11 @@ public class PoolMenu {
             });
 
             menu.addItem(ItemBuilder.of(cmf.getItems().get("current-page").merge(mc.getItems().get("current-page")))
+                    .localization(localization)
                     .placeholder(placeholders).build(player));
 
             menu.addItem(ItemBuilder.of(cmf.getItems().get("next-page").merge(mc.getItems().get("next-page")))
+                    .localization(localization)
                     .placeholder(placeholders).build(player), (e) -> {
                 if (page < pageCount) {
                     page++;
@@ -184,6 +195,7 @@ public class PoolMenu {
         if (pool.isGlobal()) {
             if (isCompletedQuests) {
                 var item = ItemBuilder.of(cmf.getItems().get("switch-to-active").merge(mc.getItems().get("switch-to-active")))
+                        .localization(localization)
                         .placeholder(Placeholder.of("{name}", config.getName())).build(player);
 
                 menu.addItem(item, (e) -> {
@@ -193,6 +205,7 @@ public class PoolMenu {
                 });
             } else {
                 var item = ItemBuilder.of(cmf.getItems().get("switch-to-completed").merge(mc.getItems().get("switch-to-completed")))
+                        .localization(localization)
                         .placeholder(Placeholder.of("{name}", config.getName()))
                         .placeholder(totalCompletedPlaceholder)
                         .build(player);
@@ -209,6 +222,7 @@ public class PoolMenu {
         // Leveling button
         if (pool.hasLeveling()) {
             var item = ItemBuilder.of(cmf.getItems().get("switch-to-levels").merge(mc.getItems().get("switch-to-levels")))
+                    .localization(localization)
                     .placeholder(Placeholder.of("{name}", config.getName()))
                     .placeholder(totalCompletedPlaceholder)
                     .placeholder(levelPlaceholder)

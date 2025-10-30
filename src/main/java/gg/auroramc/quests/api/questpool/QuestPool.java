@@ -130,7 +130,7 @@ public class QuestPool {
 
         profile.getData().unlockPool(getId());
 
-        var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getPoolUnlocked();
+        var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig(profile.getPlayer()).getPoolUnlocked();
         Chat.sendMessage(profile.getPlayer(), msg, Placeholder.of("{pool}", pool.getDefinition().getName()));
 
         return true;
@@ -247,8 +247,10 @@ public class QuestPool {
         AuroraQuests.logger().debug("Rolled quests for player " + profile.getPlayer().getName() + " in pool " + definition.getId() + ": " + String.join(", ", questIds));
 
         if (sendNotification) {
-            var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getReRolledTarget();
-            Chat.sendMessage(profile.getPlayer(), msg, Placeholder.of("{pool}", definition.getName()));
+            var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig(profile.getPlayer()).getReRolledTarget();
+            var placeholder = Placeholder.of("{pool}", definition.getName());
+            msg = Placeholder.execute(msg, placeholder);
+            Chat.sendMessage(profile.getPlayer(), AuroraQuests.getInstance().getLocalizationProvider().fillVariables(profile.getPlayer(), msg, placeholder));
         }
     }
 

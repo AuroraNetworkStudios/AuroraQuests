@@ -1,9 +1,11 @@
 package gg.auroramc.quests;
 
+import gg.auroramc.aurora.Aurora;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.aurora.api.command.CommandDispatcher;
 import gg.auroramc.aurora.api.events.user.AuroraUserLoadedEvent;
+import gg.auroramc.aurora.api.localization.LocalizationProvider;
 import gg.auroramc.aurora.api.user.AuroraUser;
 import gg.auroramc.quests.api.AuroraQuestsPlugin;
 import gg.auroramc.quests.api.data.QuestData;
@@ -52,6 +54,8 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
     }
 
     private ConfigManager configManager;
+    @Getter
+    private LocalizationProvider localizationProvider;
     private CommandManager commandManager;
     private ScheduledTask unlockTask;
 
@@ -90,6 +94,12 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        localizationProvider = new LocalizationProvider(Aurora.getLanguageProvider(), configManager.getConfig().getPerPlayerLocale());
+
+        for (var msg : configManager.getMessageConfigs().entrySet()) {
+            localizationProvider.setLocaleValues(msg.getKey(), msg.getValue().toFlatMap());
+        }
+
         AuroraAPI.getUserManager().registerUserDataHolder(QuestData.class);
         AuroraAPI.registerPlaceholderHandler(new QuestPlaceholderHandler());
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -145,6 +155,13 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
 
     public void reload() {
         configManager.reload();
+
+        localizationProvider.clear();
+        
+        for (var msg : configManager.getMessageConfigs().entrySet()) {
+            localizationProvider.setLocaleValues(msg.getKey(), msg.getValue().toFlatMap());
+        }
+
         commandManager.reload();
 
         var pools = new ArrayList<Pool>();
