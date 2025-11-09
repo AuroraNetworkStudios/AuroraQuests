@@ -8,9 +8,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class TypedObjective extends Objective {
+    private final Map<TypeId, Double> multipliers = new HashMap<>();
 
     public TypedObjective(Quest quest, ObjectiveDefinition definition, Profile.TaskDataWrapper data) {
         super(quest, definition, data);
@@ -19,6 +22,19 @@ public abstract class TypedObjective extends Objective {
                 TypeFilter.Mode.parse(definition.getArgs().getString("mode", "whitelist"))
         );
         this.filters.add(filter);
+
+        var multipliersSection = definition.getArgs().getConfigurationSection("multipliers");
+        if (multipliersSection == null) return;
+
+        for (var type : multipliersSection.getKeys(false)) {
+            multipliers.put(TypeId.fromString(type), multipliersSection.getDouble(type));
+        }
+    }
+
+    @Override
+    public double applyMultipliers(double progress, ObjectiveMeta meta) {
+        var variable = meta.getVariable("type", TypeId.class);
+        return variable.map(typeId -> progress * multipliers.getOrDefault(typeId, 1D)).orElse(progress);
     }
 
     protected ObjectiveMeta meta(Location location, TypeId type) {

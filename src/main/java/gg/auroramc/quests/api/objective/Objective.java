@@ -1,6 +1,7 @@
 package gg.auroramc.quests.api.objective;
 
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.event.BukkitEventBus;
@@ -131,6 +132,7 @@ public abstract class Objective extends EventBus {
         if (isCompleted()) return;
 
         if (passesFilters(meta)) {
+            progress = applyMultipliers(progress, meta);
             data.progress(progress);
             this.publish(EventType.TASK_PROGRESS, this);
             if (isCompleted()) {
@@ -151,6 +153,10 @@ public abstract class Objective extends EventBus {
 
     public List<ObjectiveFilter> getFilters() {
         return new ArrayList<>();
+    }
+
+    public double applyMultipliers(double progress, ObjectiveMeta meta) {
+        return progress;
     }
 
     public void dispose() {
