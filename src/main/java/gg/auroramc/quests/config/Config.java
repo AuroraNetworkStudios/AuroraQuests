@@ -29,6 +29,7 @@ public class Config extends AuroraConfig {
     private CommandAliasConfig commandAliases;
     private List<String> sortOrder;
     private UnlockTaskConfig unlockTask = new UnlockTaskConfig();
+    private GlobalQuestConfig globalQuests = new GlobalQuestConfig();
 
     @IgnoreField
     private Map<String, Integer> sortOderMap;
@@ -83,6 +84,12 @@ public class Config extends AuroraConfig {
     @Getter
     public static final class CommandAliasConfig {
         private List<String> quests = List.of("quests");
+    }
+
+    @Getter
+    public static final class GlobalQuestConfig {
+        private Boolean enabled = false;
+        private Integer syncInterval = 20; // seconds between database syncs (multi-server only)
     }
 
     public static File getFile(AuroraQuests plugin) {

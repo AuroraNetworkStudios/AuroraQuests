@@ -9,8 +9,11 @@ import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.questpool.Pool;
 import gg.auroramc.quests.menu.MainMenu;
 import gg.auroramc.quests.menu.PoolMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 @CommandAlias("%questsAlias")
 public class QuestsCommand extends BaseCommand {
@@ -201,5 +204,120 @@ public class QuestsCommand extends BaseCommand {
         if (!silent) {
             Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig(sender).getQuestReset(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
         }
+    }
+
+    @Subcommand("global reset")
+    @Description("Reset global quest progress (community-wide)")
+    @CommandCompletion("@pools @quests|all")
+    @CommandPermission("aurora.quests.admin.global.reset")
+    public void onGlobalReset(CommandSender sender, String poolId, @Default("all") String questId) {
+        var manager = plugin.getGlobalQuestManager();
+        if (manager == null || !manager.isEnabled()) {
+            Chat.sendMessage(sender, "&cGlobal quests are not enabled!");
+            return;
+        }
+
+        if (questId.equals("all")) {
+            // Reset all global quests in the pool
+            var poolManager = plugin.getPoolManager().getPool(poolId);
+            if (poolManager == null) {
+                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig(sender).getPoolNotFound(), Placeholder.of("{pool}", poolId));
+                return;
+            }
+
+            int count = 0;
+            for (var questDef : poolManager.getDefinition().getQuests().values()) {
+                manager.resetQuest(questDef.getId());
+                count++;
+            }
+
+            Chat.sendMessage(sender, "&aReset &e" + count + " &aglobal quests in pool &e" + poolId);
+        } else {
+            // Reset specific quest
+            manager.resetQuest(questId);
+            Chat.sendMessage(sender, "&aReset global quest &e" + questId + " &aprogress (community-wide)");
+        }
+    }
+
+    @Subcommand("global progress")
+    @Description("View global quest progress")
+    @CommandCompletion("@pools @quests")
+    @CommandPermission("aurora.quests.admin.global.progress")
+    public void onGlobalProgress(CommandSender sender, String poolId, String questId) {
+        var manager = plugin.getGlobalQuestManager();
+        if (manager == null || !manager.isEnabled()) {
+            Chat.sendMessage(sender, "&cGlobal quests are not enabled!");
+            return;
+        }
+
+        var poolManager = plugin.getPoolManager().getPool(poolId);
+        if (poolManager == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig(sender).getPoolNotFound(), Placeholder.of("{pool}", poolId));
+            return;
+        }
+
+        var questDef = poolManager.getDefinition().getQuests().get(questId);
+        if (questDef == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig(sender).getQuestNotFound(), Placeholder.of("{pool}", poolId), Placeholder.of("{quest}", questId));
+            return;
+        }
+
+        Chat.sendMessage(sender, "&7&m------------------------------------");
+        Chat.sendMessage(sender, "&6Global Quest Progress: &e" + questDef.getName());
+        Chat.sendMessage(sender, "");
+
+        long totalProgress = 0;
+        long totalTarget = 0;
+
+        for (var task : questDef.getTasks().values()) {
+            long progress = manager.getProgress(questId, task.getId());
+            long target = (long) task.getArgs().getDouble("amount", 1);
+            totalProgress += progress;
+            totalTarget += target;
+
+            double percentage = target > 0 ? (progress * 100.0 / target) : 0;
+            Chat.sendMessage(sender, "&7- &f" + task.getId() + "&7: &a" + AuroraAPI.formatNumber(progress) + "&7/&e" + AuroraAPI.formatNumber(target) + " &7(" + String.format("%.1f%%", percentage) + ")");
+        }
+
+        double totalPercentage = totalTarget > 0 ? (totalProgress * 100.0 / totalTarget) : 0;
+        Chat.sendMessage(sender, "");
+        Chat.sendMessage(sender, "&6Total Progress: &a" + AuroraAPI.formatNumber(totalProgress) + "&7/&e" + AuroraAPI.formatNumber(totalTarget) + " &7(" + String.format("%.1f%%", totalPercentage) + ")");
+        Chat.sendMessage(sender, "&6Contributors: &e" + manager.getData().getContributions().getOrDefault(questId, new ConcurrentHashMap<>()).size());
+        Chat.sendMessage(sender, "&7&m------------------------------------");
+    }
+
+    @Subcommand("global contributors")
+    @Description("View top contributors for a global quest")
+    @CommandCompletion("@pools @quests")
+    @CommandPermission("aurora.quests.admin.global.contributors")
+    public void onGlobalContributors(CommandSender sender, String poolId, String questId) {
+        var manager = plugin.getGlobalQuestManager();
+        if (manager == null || !manager.isEnabled()) {
+            Chat.sendMessage(sender, "&cGlobal quests are not enabled!");
+            return;
+        }
+
+        var contributions = manager.getData().getContributions().getOrDefault(questId, new ConcurrentHashMap<>());
+        if (contributions.isEmpty()) {
+            Chat.sendMessage(sender, "&cNo contributors yet for quest: &e" + questId);
+            return;
+        }
+
+        Chat.sendMessage(sender, "&7&m------------------------------------");
+        Chat.sendMessage(sender, "&6Top Contributors: &e" + questId);
+        Chat.sendMessage(sender, "");
+
+        contributions.entrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
+                .limit(10)
+                .forEach(entry -> {
+                    var player = Bukkit.getOfflinePlayer(entry.getKey());
+                    String name = player.getName() != null ? player.getName() : entry.getKey().toString();
+                    Chat.sendMessage(sender, "&7- &f" + name + "&7: &a" + AuroraAPI.formatNumber(entry.getValue()));
+                });
+
+        Chat.sendMessage(sender, "");
+        Chat.sendMessage(sender, "&7Total contributors: &e" + contributions.size());
+        Chat.sendMessage(sender, "&7&m------------------------------------");
     }
 }

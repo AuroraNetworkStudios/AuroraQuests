@@ -20,6 +20,9 @@ public class QuestData extends UserDataHolder {
     private final Map<String, Set<String>> questUnlocks = Maps.newConcurrentMap();
     private final Set<String> poolUnlocks = Sets.newConcurrentHashSet();
 
+    // Global quest milestone claims: questId -> set of claimed milestone percentages
+    private final Map<String, Set<Integer>> claimedGlobalMilestones = Maps.newConcurrentMap();
+
     public PoolRollData getPoolRollData(String poolId) {
         return rolledQuests.get(poolId);
     }
@@ -113,6 +116,21 @@ public class QuestData extends UserDataHolder {
         return completedCount.getOrDefault(poolId, 0L);
     }
 
+    public boolean hasClaimedGlobalMilestone(String questId, int percentage) {
+        return claimedGlobalMilestones.computeIfAbsent(questId, k -> Sets.newConcurrentHashSet())
+                .contains(percentage);
+    }
+
+    public void markGlobalMilestoneClaimed(String questId, int percentage) {
+        claimedGlobalMilestones.computeIfAbsent(questId, k -> Sets.newConcurrentHashSet())
+                .add(percentage);
+        dirty.set(true);
+    }
+
+    public Set<Integer> getClaimedGlobalMilestones(String questId) {
+        return claimedGlobalMilestones.getOrDefault(questId, Sets.newConcurrentHashSet());
+    }
+
     @Override
     public NamespacedId getId() {
         return NamespacedId.fromDefault("quests");
@@ -167,6 +185,12 @@ public class QuestData extends UserDataHolder {
         for (var entry : completedCount.entrySet()) {
             completedCountSection.set(entry.getKey(), entry.getValue());
         }
+
+        // Claimed global milestones
+        var globalMilestonesSection = data.createSection("global_milestones");
+        for (var entry : claimedGlobalMilestones.entrySet()) {
+            globalMilestonesSection.set(entry.getKey(), new ArrayList<>(entry.getValue()));
+        }
     }
 
     @Override
@@ -213,6 +237,15 @@ public class QuestData extends UserDataHolder {
         }
 
         poolUnlocks.addAll(data.getStringList("pool_unlocks"));
+
+        // Load claimed global milestones
+        var globalMilestonesSection = data.getConfigurationSection("global_milestones");
+        if (globalMilestonesSection != null) {
+            for (var key : globalMilestonesSection.getKeys(false)) {
+                List<Integer> milestones = globalMilestonesSection.getIntegerList(key);
+                claimedGlobalMilestones.put(key, Sets.newConcurrentHashSet(milestones));
+            }
+        }
     }
 
     public void purgeInvalidData(Collection<Pool> pools) {

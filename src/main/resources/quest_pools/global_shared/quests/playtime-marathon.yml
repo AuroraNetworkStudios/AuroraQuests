@@ -1,0 +1,67 @@
+name: "&b&lPlaytime Marathon"
+difficulty: "hard"
+
+menu-item:
+  material: CLOCK
+  name: "&b&l{name}"
+  lore:
+    - "&7Reach 10,000 hours of combined"
+    - "&7playtime across the network!"
+    - ""
+    - "&eGlobal Progress: &a{global_current}&7/&a{global_target} &7hours"
+    - "&eYour Contribution: &b{player_contribution} &7hours"
+    - ""
+    - "&7Milestones:"
+    - "  &725% &8- &a2,500 hours"
+    - "  &750% &8- &a5,000 hours"
+    - "  &775% &8- &a7,500 hours"
+    - "  &7100% &8- &a10,000 hours!"
+    - ""
+    - "&8Only contributors receive rewards!"
+
+completed-lore:
+  - ""
+  - "&a&lCOMMUNITY GOAL COMPLETE!"
+
+tasks:
+  total_playtime:
+    task: PLACEHOLDER
+    display: "Play together &7({global_current}/{global_target} hours)"
+    args:
+      # 10,000 hours in ticks (1 hour = 72000 ticks)
+      # 10,000 * 72000 = 720,000,000 ticks
+      amount: 720000000
+      placeholder: "%statistic_time_played%"
+      value: "720000000"
+      comparison: ">="
+
+milestones:
+  25:  # 2,500 hours
+    broadcast:
+      type: command
+      command: "[console] say &b2,500 hours reached! 25% complete!"
+      display: "&8+&aServer broadcast"
+
+  50:  # 5,000 hours
+    broadcast:
+      type: command
+      command: "[console] say &b5,000 hours reached! Halfway there!"
+      display: "&8+&aServer broadcast"
+
+  75:  # 7,500 hours
+    broadcast:
+      type: command
+      command: "[console] say &b7,500 hours reached! Almost there!"
+      display: "&8+&aServer broadcast"
+
+  100:  # 10,000 hours
+    broadcast:
+      type: command
+      command: "[console] say &b&l10,000 HOURS! Playtime Marathon complete!"
+      display: "&8+&aServer broadcast"
+    diamond_blocks:
+      type: command
+      command: "[player] give {player} diamond_block 5"
+      display: "&8+&b5 Diamond Blocks"
+
+rewards: {}

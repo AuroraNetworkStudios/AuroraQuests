@@ -1,0 +1,60 @@
+# ╔════════════════════════════════════════════════════════════════╗
+# ║  GLOBAL SHARED QUEST POOL - Requires MySQL!                   ║
+# ║  All players across all servers contribute to the same goals  ║
+# ╚════════════════════════════════════════════════════════════════╝
+#
+# IMPORTANT: This quest pool requires MySQL to be configured in Aurora/config.yml
+# Without MySQL, this pool will be automatically disabled.
+#
+# For single-server setups, you can delete this folder or use regular quest pools instead.
+# See SETUP_GUIDE.md for configuration instructions.
+
+type: GLOBAL_SHARED
+name: "Community Goals"
+
+# Define difficulties for this pool
+difficulties:
+  hard: 3
+
+# How should this pool be displayed in the main menu and where?
+menu-item:
+  show-in-main-menu: true
+  page: 1
+  locked-lore:
+    - ""
+    - "&cMySQL is not configured!"
+    - "&cGlobal quests require MySQL to function."
+  item:
+    material: NETHER_STAR
+    slot: 13
+    name: "&6&l{name}"
+    lore:
+      - "&7Work together with players across"
+      - "&7all servers to complete massive"
+      - "&7community objectives!"
+      - ""
+      - "&7Total completed: &f{total_completed}"
+      - ""
+      - "&8Global ranking: &8#&a{lb_position}"
+      - "&8You are in the top &a{lb_position_percent}%&8 of &7{lb_size}"
+      - "&8players!"
+      - ""
+      - "&eClick to view!"
+
+menu:
+  title: "{name}"
+  rows: 6
+  display-area: [ 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43 ]
+  has-back-button: true
+  has-close-button: true
+  filler:
+    enabled: true
+    item:
+      material: black_stained_glass_pane
+      name: " "
+  custom-items: {}
+  items: {}
+
+# Leveling is disabled for global quests (everyone contributes together)
+leveling:
+  enabled: false

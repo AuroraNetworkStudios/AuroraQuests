@@ -83,6 +83,7 @@ dependencies {
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
     compileOnly("org.quartz-scheduler:quartz:2.3.2")
     compileOnly("com.cronutils:cron-utils:9.2.0")
@@ -112,6 +113,7 @@ tasks.withType<ShadowJar> {
     relocate("co.aikar.commands", "gg.auroramc.quests.libs.acf")
     relocate("co.aikar.locales", "gg.auroramc.quests.libs.locales")
     relocate("org.bstats", "gg.auroramc.quests.libs.bstats")
+    relocate("com.zaxxer.hikari", "gg.auroramc.quests.libs.hikari")
 
     exclude("acf-*.properties")
 }

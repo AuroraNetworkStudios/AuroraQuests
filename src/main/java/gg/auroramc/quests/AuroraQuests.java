@@ -14,6 +14,7 @@ import gg.auroramc.quests.api.event.QuestCompletedEvent;
 import gg.auroramc.quests.api.factory.ObjectiveFactory;
 import gg.auroramc.quests.api.objective.ObjectiveType;
 import gg.auroramc.quests.api.profile.ProfileManager;
+import gg.auroramc.quests.api.quest.GlobalQuestManager;
 import gg.auroramc.quests.api.questpool.Pool;
 import gg.auroramc.quests.api.questpool.PoolManager;
 import gg.auroramc.quests.command.CommandManager;
@@ -60,6 +61,8 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
     private ScheduledTask unlockTask;
 
     private BukkitEventBus bukkitEventBus;
+    @Getter
+    private GlobalQuestManager globalQuestManager;
 
     @Override
     public void onLoad() {
@@ -103,6 +106,11 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         AuroraAPI.getUserManager().registerUserDataHolder(QuestData.class);
         AuroraAPI.registerPlaceholderHandler(new QuestPlaceholderHandler());
         Bukkit.getPluginManager().registerEvents(this, this);
+
+        // Initialize Global Quest Manager
+        globalQuestManager = new GlobalQuestManager();
+        var gqConfig = configManager.getConfig().getGlobalQuests();
+        globalQuestManager.init(gqConfig.getEnabled(), gqConfig.getSyncInterval());
 
         commandManager = new CommandManager(this);
         commandManager.reload();
@@ -190,6 +198,10 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         if (unlockTask != null && !unlockTask.isCancelled()) {
             unlockTask.cancel();
         }
+
+        if (globalQuestManager != null) {
+            globalQuestManager.shutdown();
+        }
     }
 
     private void registerObjectives() {
@@ -265,6 +277,17 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         if (event.getUser().getPlayer() != null) {
             if (loaded) {
                 profileManager.createProfile(event.getUser());
+
+                // Check for pending global milestone rewards
+                if (globalQuestManager != null && globalQuestManager.isEnabled()) {
+                    var questData = event.getUser().getData(QuestData.class);
+                    if (questData != null) {
+                        // Run on next tick to ensure player is fully loaded
+                        Bukkit.getScheduler().runTaskLater(this, () -> {
+                            globalQuestManager.distributePendingMilestoneRewards(event.getUser().getPlayer(), questData);
+                        }, 1L);
+                    }
+                }
             } else {
                 toLoad.add(event.getUser().getPlayer());
             }

@@ -36,6 +36,13 @@ leaderboards:
   # Only makes sense to enable this if you have a lot of quests, and they are not easy to complete fast
   include-global: false
 
+# Global quest system (GLOBAL_SHARED quest pools)
+# Requires MySQL to be configured in Aurora/config.yml
+global-quests:
+  enabled: true
+  # How often to sync with MySQL (in seconds)
+  sync-interval: 20
+
 display-components:
   rewards:
     title: "  &7Rewards:&r"

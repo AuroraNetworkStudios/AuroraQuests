@@ -25,4 +25,7 @@ public class QuestDefinition {
     private final QuestRequirement requirements;
     private final QuestConfig.LevelUpMessage questCompleteMessage;
     private final QuestConfig.LevelUpSound questCompleteSound;
+
+    // Global quest specific fields
+    private final LinkedHashMap<Integer, List<Reward>> milestones; // percentage -> rewards
 }
