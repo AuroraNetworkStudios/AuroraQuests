@@ -1,0 +1,68 @@
+name: "&7&lMaster Miners"
+difficulty: "hard"
+
+menu-item:
+  material: DIAMOND_PICKAXE
+  name: "&7&l{name}"
+  lore:
+    - "&7Mine 100,000 diamonds together!"
+    - ""
+    - "&eGlobal Progress: &a{global_current}&7/&a{global_target}"
+    - "&eYour Contribution: &b{player_contribution}"
+    - ""
+    - "&7Milestones:"
+    - "  &725% &8- &aProgress reward"
+    - "  &750% &8- &aDiamond pickaxe"
+    - "  &775% &8- &aMore diamonds"
+    - "  &7100% &8- &aDiamond blocks!"
+    - ""
+    - "&8Only contributors receive rewards!"
+
+completed-lore:
+  - ""
+  - "&a&lCOMMUNITY GOAL COMPLETE!"
+
+tasks:
+  mine_diamonds:
+    task: BLOCK_BREAK
+    display: "Mine diamonds &7({global_current}/{global_target})"
+    args:
+      amount: 100000
+      types:
+        - "minecraft:diamond_ore"
+        - "minecraft:deepslate_diamond_ore"
+
+milestones:
+  25:  # 25,000 diamonds
+    broadcast:
+      type: command
+      command: "[console] say &b25,000 diamonds mined! 25% complete!"
+      display: "&8+&aServer broadcast"
+
+  50:  # 50,000 diamonds
+    broadcast:
+      type: command
+      command: "[console] say &b50,000 diamonds mined! Halfway there!"
+      display: "&8+&aServer broadcast"
+    pickaxe:
+      type: command
+      command: "[player] give {player} diamond_pickaxe 1"
+      display: "&8+&b1 Diamond Pickaxe"
+
+  75:  # 75,000 diamonds
+    broadcast:
+      type: command
+      command: "[console] say &b75,000 diamonds mined! Almost there!"
+      display: "&8+&aServer broadcast"
+
+  100:  # 100,000 diamonds
+    broadcast:
+      type: command
+      command: "[console] say &b&l100,000 DIAMONDS! Master Miners complete!"
+      display: "&8+&aServer broadcast"
+    diamond_blocks:
+      type: command
+      command: "[player] give {player} diamond_block 10"
+      display: "&8+&b10 Diamond Blocks"
+
+rewards: {}

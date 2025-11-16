@@ -26,6 +26,9 @@ public class QuestConfig extends AuroraConfig {
     private QuestConfig.LevelUpSound questCompleteSound;
     private QuestConfig.LevelUpMessage questCompleteMessage;
 
+    // Global quest specific fields
+    private Map<Integer, ConfigurationSection> milestones; // percentage -> rewards config
+
     @Setter
     @IgnoreField
     private String id;

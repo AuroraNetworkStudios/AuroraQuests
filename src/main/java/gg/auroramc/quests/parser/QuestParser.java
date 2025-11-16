@@ -11,6 +11,7 @@ import gg.auroramc.quests.config.quest.TaskConfig;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class QuestParser {
@@ -28,6 +29,7 @@ public class QuestParser {
                 .uncompletedLore(config.getUncompletedLore())
                 .questCompleteMessage(config.getQuestCompleteMessage())
                 .questCompleteSound(config.getQuestCompleteSound())
+                .milestones(parseMilestones(config.getMilestones(), rewardFactory))
                 .build();
     }
 
@@ -59,5 +61,27 @@ public class QuestParser {
         }
 
         return tasks;
+    }
+
+    public static LinkedHashMap<Integer, List<Reward>> parseMilestones(Map<Integer, ConfigurationSection> milestonesConfig, RewardFactory factory) {
+        if (milestonesConfig == null) return new LinkedHashMap<>();
+
+        LinkedHashMap<Integer, List<Reward>> milestones = new LinkedHashMap<>();
+
+        for (Map.Entry<Integer, ConfigurationSection> entry : milestonesConfig.entrySet()) {
+            List<Reward> rewardList = new java.util.ArrayList<>();
+            ConfigurationSection rewardsSection = entry.getValue();
+
+            if (rewardsSection != null) {
+                for (String key : rewardsSection.getKeys(false)) {
+                    var reward = factory.createReward(rewardsSection.getConfigurationSection(key));
+                    reward.ifPresent(rewardList::add);
+                }
+            }
+
+            milestones.put(entry.getKey(), rewardList);
+        }
+
+        return milestones;
     }
 }

@@ -10,6 +10,7 @@ import gg.auroramc.quests.api.event.EventType;
 import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.api.quest.Quest;
 import gg.auroramc.quests.api.objective.filter.ObjectiveFilter;
+import gg.auroramc.quests.api.questpool.PoolType;
 import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
@@ -133,7 +134,28 @@ public abstract class Objective extends EventBus {
 
         if (passesFilters(meta)) {
             progress = applyMultipliers(progress, meta);
-            data.progress(progress);
+
+            // Check if this is a global shared quest
+            if (quest.getPool().getDefinition().getType() == PoolType.GLOBAL_SHARED) {
+                // Update global progress via GlobalQuestManager
+                var manager = AuroraQuests.getInstance().getGlobalQuestManager();
+                if (manager != null && manager.isEnabled()) {
+                    manager.incrementProgress(
+                        quest.getPool().getId(),
+                        quest.getId(),
+                        definition.getId(),
+                        meta.getPlayer().getUniqueId(),
+                        (long) progress,
+                        quest.getDefinition()
+                    );
+                }
+                // Also track personal contribution in player data for UI purposes
+                data.progress(progress);
+            } else {
+                // Regular quest - update player progress only
+                data.progress(progress);
+            }
+
             this.publish(EventType.TASK_PROGRESS, this);
             if (isCompleted()) {
                 this.publish(EventType.TASK_COMPLETED, this);
@@ -182,10 +204,28 @@ public abstract class Objective extends EventBus {
     }
 
     public double getProgress() {
+        // For global quests, return global progress
+        if (quest.getPool().getDefinition().getType() == PoolType.GLOBAL_SHARED) {
+            var manager = AuroraQuests.getInstance().getGlobalQuestManager();
+            if (manager != null && manager.isEnabled()) {
+                long globalProgress = manager.getProgress(quest.getId(), definition.getId());
+                return globalProgress >= target ? target : globalProgress;
+            }
+        }
+        // For regular quests, return personal progress
         return data.isCompleted(target) ? target : data.getProgress();
     }
 
     public boolean isCompleted() {
+        // For global quests, check global progress
+        if (quest.getPool().getDefinition().getType() == PoolType.GLOBAL_SHARED) {
+            var manager = AuroraQuests.getInstance().getGlobalQuestManager();
+            if (manager != null && manager.isEnabled()) {
+                long globalProgress = manager.getProgress(quest.getId(), definition.getId());
+                return globalProgress >= target;
+            }
+        }
+        // For regular quests, check personal progress
         return data.isCompleted(target);
     }
 
@@ -215,8 +255,28 @@ public abstract class Objective extends EventBus {
 
     public String display() {
         var gc = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig().getTaskStatuses();
-        var count = isCompleted() ? target : Math.min(data.getProgress(), target);
 
+        // For global quests, show global progress and player contribution
+        if (quest.getPool().getDefinition().getType() == PoolType.GLOBAL_SHARED) {
+            var manager = AuroraQuests.getInstance().getGlobalQuestManager();
+            if (manager != null && manager.isEnabled()) {
+                long globalProgress = manager.getProgress(quest.getId(), definition.getId());
+                long playerContribution = (long) data.getProgress();
+                boolean completed = globalProgress >= target;
+
+                return Placeholder.execute(definition.getDisplay(),
+                        Placeholder.of("{status}", completed ? gc.getCompleted() : gc.getNotCompleted()),
+                        Placeholder.of("{current}", AuroraAPI.formatNumber(Math.min(globalProgress, (long) target))),
+                        Placeholder.of("{required}", AuroraAPI.formatNumber(target)),
+                        Placeholder.of("{global_current}", AuroraAPI.formatNumber(globalProgress)),
+                        Placeholder.of("{global_target}", AuroraAPI.formatNumber(target)),
+                        Placeholder.of("{player_contribution}", AuroraAPI.formatNumber(playerContribution))
+                );
+            }
+        }
+
+        // For regular quests, show personal progress
+        var count = isCompleted() ? target : Math.min(data.getProgress(), target);
         return Placeholder.execute(definition.getDisplay(),
                 Placeholder.of("{status}", isCompleted() ? gc.getCompleted() : gc.getNotCompleted()),
                 Placeholder.of("{current}", AuroraAPI.formatNumber(count)),

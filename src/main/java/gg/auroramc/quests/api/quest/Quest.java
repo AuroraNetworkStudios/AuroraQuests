@@ -191,6 +191,40 @@ public class Quest extends EventBus {
             placeholders.add(Placeholder.of("{reward_" + reward.getKey() + "}", reward.getValue().getDisplay(data.profile().getPlayer(), placeholders)));
         }
 
+        // Add global quest placeholders for GLOBAL_SHARED pools
+        if (pool.getDefinition().getType() == gg.auroramc.quests.api.questpool.PoolType.GLOBAL_SHARED) {
+            var manager = AuroraQuests.getInstance().getGlobalQuestManager();
+
+            if (manager != null && manager.isEnabled()) {
+                // Manager is enabled - get actual values
+                long globalCurrent = 0;
+                long globalTarget = 0;
+                long playerContribution = 0;
+
+                // Sum up progress across all objectives for this quest
+                for (var objective : objectives) {
+                    globalCurrent += manager.getProgress(definition.getId(), objective.getId());
+                    globalTarget += (long) objective.getTarget();
+                    playerContribution += (long) objective.getData().getProgress();
+                }
+
+                placeholders.add(Placeholder.of("{global_current}", AuroraAPI.formatNumber(globalCurrent)));
+                placeholders.add(Placeholder.of("{global_target}", AuroraAPI.formatNumber(globalTarget)));
+                placeholders.add(Placeholder.of("{player_contribution}", AuroraAPI.formatNumber(playerContribution)));
+            } else {
+                // Manager is disabled - provide default values
+                long targetSum = 0;
+                for (var objective : objectives) {
+                    targetSum += (long) objective.getTarget();
+                }
+                final String formattedTarget = AuroraAPI.formatNumber(targetSum);
+
+                placeholders.add(Placeholder.of("{global_current}", () -> "0"));
+                placeholders.add(Placeholder.of("{global_target}", () -> formattedTarget));
+                placeholders.add(Placeholder.of("{player_contribution}", () -> "0"));
+            }
+        }
+
         return placeholders;
     }
 
