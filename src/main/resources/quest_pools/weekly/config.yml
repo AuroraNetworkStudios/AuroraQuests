@@ -10,6 +10,9 @@ difficulties:
 # At what time to roll new quests (quartz cron syntax) help: http://www.cronmaker.com/
 reset-frequency: 0 0 0 ? * MON
 
+# Should quests be rolled again when all of them are completed?
+reroll-on-completion: false
+
 # How should this pool be displayed in the main menu and where?
 menu-item:
   show-in-main-menu: true

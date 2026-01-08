@@ -45,6 +45,9 @@ public class QuestPool {
                     reward(newLevel);
                     Bukkit.getPluginManager().callEvent(new QuestPoolLevelUpEvent(profile.getPlayer(), this));
                 }
+
+                if (!isGlobal() && getNotCompletedQuests().isEmpty() && pool.getDefinition().getRerollOnCompletion())
+                    reRollQuests(true);
             });
         }
     }

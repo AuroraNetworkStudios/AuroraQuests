@@ -16,6 +16,7 @@ public class PoolDefinition {
     private final String name;
     private final Map<String, Integer> difficulties;
     private final String resetFrequency;
+    private final Boolean rerollOnCompletion;
     private final PoolConfig.PoolMenuItem menuItem;
     private final PoolConfig.PoolMenu menu;
     private final PoolConfig.Leveling leveling;

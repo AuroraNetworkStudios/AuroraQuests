@@ -22,6 +22,7 @@ public class PoolConfig extends AuroraConfig {
     private String name;
     private Map<String, Integer> difficulties;
     private String resetFrequency;
+    private Boolean rerollOnCompletion = false;
     private PoolMenuItem menuItem;
     private PoolMenu menu;
     private Leveling leveling;
