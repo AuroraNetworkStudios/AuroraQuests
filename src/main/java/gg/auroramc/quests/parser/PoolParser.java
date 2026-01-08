@@ -18,6 +18,7 @@ public class PoolParser {
                 .name(config.getName())
                 .difficulties(config.getDifficulties())
                 .resetFrequency(config.getResetFrequency())
+                .rerollOnCompletion(config.getRerollOnCompletion())
                 .menu(config.getMenu())
                 .menuItem(config.getMenuItem())
                 .requirement(QuestParser.parseRequirement(config.getUnlockRequirements()))

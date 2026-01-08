@@ -50,7 +50,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:2.4.0-SNAPSHOT")
+    compileOnly("gg.auroramc:Aurora:2.5.1")
     compileOnly("gg.auroramc:AuroraLevels:1.6.2")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.2.0")
@@ -131,11 +131,11 @@ tasks {
     }
     runServer {
         downloadPlugins {
-            modrinth("AuroraLib", "2.4.1")
+            modrinth("AuroraLib", "2.5.1")
             //hangar("PlaceholderAPI", "2.11.6")
             //url("https://download.luckperms.net/1606/bukkit/loader/LuckPerms-Bukkit-5.5.17.jar")
         }
-        minecraftVersion("1.21.10")
+        minecraftVersion("1.21.11")
     }
 }
 
