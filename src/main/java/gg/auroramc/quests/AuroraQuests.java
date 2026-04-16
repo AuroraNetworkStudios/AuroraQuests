@@ -7,6 +7,7 @@ import gg.auroramc.aurora.api.command.CommandDispatcher;
 import gg.auroramc.aurora.api.events.user.AuroraUserLoadedEvent;
 import gg.auroramc.aurora.api.localization.LocalizationProvider;
 import gg.auroramc.aurora.api.user.AuroraUser;
+import gg.auroramc.aurora.api.util.Version;
 import gg.auroramc.quests.api.AuroraQuestsPlugin;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.event.BukkitEventBus;
@@ -236,6 +237,10 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         ObjectiveFactory.registerObjective(ObjectiveType.BREAK_ITEM, BreakItemObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.TRAVEL, TravelObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.PLAY_TIME, PlayTimeObjective.class);
+        // VaultChangeStateEvent is available starting from Paper 1.21.5
+        if (Version.isAtLeastVersion(21, 5))
+            ObjectiveFactory.registerObjective(ObjectiveType.UNLOCK_VAULT, UnlockVaultObjective.class);
+
     }
 
     private void reloadUnlockTask() {
