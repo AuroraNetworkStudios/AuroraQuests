@@ -77,7 +77,7 @@ dependencies {
     compileOnly("de.oliver:FancyNpcs:2.6.0")
     compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
     compileOnly("com.nexomc:nexo:1.8.0")
-    compileOnly("su.nightexpress.excellentshop:Core:4.20.0") {
+    compileOnly("su.nightexpress.excellentshop:Core:5.1.1") {
         exclude(group = "com.github.Xyness", module = "SimpleClaimSystem")
     }
 
