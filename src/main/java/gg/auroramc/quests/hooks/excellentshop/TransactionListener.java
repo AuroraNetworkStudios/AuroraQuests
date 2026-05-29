@@ -6,24 +6,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import su.nightexpress.nexshop.api.shop.Transaction;
-import su.nightexpress.nexshop.api.shop.event.ShopTransactionEvent;
-import su.nightexpress.nexshop.api.shop.type.TradeType;
+import su.nightexpress.excellentshop.api.event.TransactionCompletedEvent;
+import su.nightexpress.excellentshop.api.product.TradeType;
+import su.nightexpress.excellentshop.api.transaction.ECompletedTransaction;
 
 public class TransactionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onTransaction(ShopTransactionEvent event) {
-        var transaction = event.getTransaction();
-        if (transaction.getResult() == Transaction.Result.FAILURE) return;
-        var price = transaction.getPrice() * transaction.getAmount();
-
-        String currencyName = transaction.getCurrency().getName();
-
-        if (transaction.getTradeType() == TradeType.BUY) {
-            Bukkit.getPluginManager().callEvent(new PlayerSpendOnPurchaseEvent(event.getPlayer(), price, currencyName));
+    public void onTransaction(TransactionCompletedEvent event) {
+        if (event.isCancelled() || !event.getTransaction().successful()) return;
+        final ECompletedTransaction transaction = event.getTransaction();
+        if (transaction.type() == TradeType.BUY) {
+            transaction.worth().getBalanceMap().forEach((currency, worth) -> {
+                Bukkit.getPluginManager().callEvent(new PlayerSpendOnPurchaseEvent(transaction.player(), worth, currency));
+            });
         } else {
-            Bukkit.getPluginManager().callEvent(new PlayerEarnFromSellEvent(event.getPlayer(), price, currencyName));
+            transaction.worth().getBalanceMap().forEach((currency, worth) -> {
+                Bukkit.getPluginManager().callEvent(new PlayerEarnFromSellEvent(transaction.player(), worth, currency));
+            });
         }
     }
 }
