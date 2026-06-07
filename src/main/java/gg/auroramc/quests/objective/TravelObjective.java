@@ -14,16 +14,20 @@ import java.util.function.Consumer;
 
 public class TravelObjective extends Objective {
     private final List<StatHandler> handlers = new ArrayList<>();
-    private static final Map<String, Statistic> stats = Map.of(
-            "walk", Statistic.WALK_ONE_CM,
-            "sprint", Statistic.SPRINT_ONE_CM,
-            "swim", Statistic.SWIM_ONE_CM,
-            "boat", Statistic.BOAT_ONE_CM,
-            "horse", Statistic.HORSE_ONE_CM,
-            "pig", Statistic.PIG_ONE_CM,
-            "strider", Statistic.STRIDER_ONE_CM,
-            "walk-on-water", Statistic.WALK_ON_WATER_ONE_CM,
-            "walk-under-water", Statistic.WALK_UNDER_WATER_ONE_CM
+    private static final Map<String, Statistic> stats = Map.ofEntries(
+            Map.entry("walk", Statistic.WALK_ONE_CM),
+            Map.entry("sprint", Statistic.SPRINT_ONE_CM),
+            Map.entry("swim", Statistic.SWIM_ONE_CM),
+            Map.entry("boat", Statistic.BOAT_ONE_CM),
+            Map.entry("horse", Statistic.HORSE_ONE_CM),
+            Map.entry("pig", Statistic.PIG_ONE_CM),
+            Map.entry("strider", Statistic.STRIDER_ONE_CM),
+            Map.entry("walk-on-water", Statistic.WALK_ON_WATER_ONE_CM),
+            Map.entry("walk-under-water", Statistic.WALK_UNDER_WATER_ONE_CM),
+            Map.entry("fly", Statistic.FLY_ONE_CM),
+            Map.entry("happy-ghast", Statistic.HAPPY_GHAST_ONE_CM),
+            Map.entry("minecart", Statistic.MINECART_ONE_CM),
+            Map.entry("nautilus", Statistic.NAUTILUS_ONE_CM)
     );
 
     public TravelObjective(Quest quest, ObjectiveDefinition definition, Profile.TaskDataWrapper data) {

@@ -22,7 +22,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "2.3.0"
+version = "2.4.0"
 
 repositories {
     flatDir {
@@ -49,7 +49,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     compileOnly("gg.auroramc:Aurora:2.5.1")
     compileOnly("gg.auroramc:AuroraLevels:1.6.2")
     compileOnly("net.luckperms:api:5.4")
