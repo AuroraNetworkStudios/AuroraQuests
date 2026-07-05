@@ -16,8 +16,7 @@ import java.util.Set;
 
 public class EconomyShopGUIListener implements Listener {
     private final Set<Transaction.Result> successResults = Set.of(
-            Transaction.Result.SUCCESS, Transaction.Result.SUCCESS_COMMANDS_EXECUTED,
-            Transaction.Result.NOT_ALL_ITEMS_ADDED
+            Transaction.Result.SUCCESS, Transaction.Result.SUCCESS_COMMANDS_EXECUTED
     );
     private final Set<Transaction.Type> buyTypes = Set.of(
             Transaction.Type.BUY_SCREEN, Transaction.Type.BUY_STACKS_SCREEN, Transaction.Type.QUICK_BUY,

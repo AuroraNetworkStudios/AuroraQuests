@@ -90,7 +90,7 @@ dependencies {
     }
     compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.3.3")
     //compileOnly("com.nisovin.shopkeepers:ShopkeepersAPI:2.23.3")
-    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.2")
+    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.10.1")
     compileOnly("io.th0rgal:oraxen:1.179.0")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0") {
         exclude(group = "org.spigotmc", module = "spigot-api")
