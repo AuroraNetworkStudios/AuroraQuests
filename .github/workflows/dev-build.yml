@@ -28,7 +28,7 @@ jobs:
           gradle-version: '9.6.0'
 
       - name: Build with Gradle
-        run: gradle clean build
+        run: gradle clean build -PbuildNumber=${{ github.run_number }}
 
       - name: Upload JAR Artifact
         id: upload-jar
@@ -37,17 +37,61 @@ jobs:
           name: AuroraQuests-${{ github.run_number }}
           path: build/libs/AuroraQuests-**.jar
 
-      - name: Get commit messages since last push
-        id: commits
+      - name: Build changelog
         run: |
-          echo "Fetching commits between ${{ github.event.before }} and ${{ github.sha }}"
-          commits_json=$(git log ${{ github.event.before }}..${{ github.sha }} --pretty=format:'{"sha": "%H", "message": "%s"},' | sed '$ s/,$//')
-          commits_base64=$(echo "[$commits_json]" | base64 -w 0)
-          echo "commits=$commits_base64" >> $GITHUB_OUTPUT
+          jq '[.commits[] | {sha: .id, message: .message}]' "$GITHUB_EVENT_PATH" > commits.json
+          jq -r '
+            [
+              .commits[] |
+              "- " + (.message | gsub("\r\n"; "\n") | gsub("\n"; "\n  ")) + " (" + (.id[0:7]) + ")"
+            ] | join("\n\n")
+          ' "$GITHUB_EVENT_PATH" > changelog.txt
+          if [ ! -s changelog.txt ]; then
+            echo "Build ${{ github.run_number }}" > changelog.txt
+          fi
+
+      - name: Read release metadata
+        run: |
+          artifact_path=$(find build/libs -type f -name 'AuroraQuests-*.jar' | sort | head -n 1)
+          if [ -z "$artifact_path" ]; then
+            echo "::error::No AuroraQuests JAR found in build/libs"
+            exit 1
+          fi
+
+          plugin_version=$(basename "$artifact_path" .jar)
+          plugin_version=${plugin_version#AuroraQuests-}
+          is_dev=true
+
+          supported_minecraft_versions=$(
+            awk -F= '{
+              key = $1
+              gsub(/^[[:space:]]+|[[:space:]]+$/, "", key)
+              if (key == "supportedMinecraftVersions") {
+                print substr($0, index($0, "=") + 1)
+                found = 1
+                exit
+              }
+            } END {if (!found) print ""}' gradle.properties |
+            jq -R -c 'split(",") | map(gsub("^[[:space:]]+|[[:space:]]+$"; "")) | map(select(length > 0))'
+          )
+          if [ "$supported_minecraft_versions" = "[]" ]; then
+            echo "::error::supportedMinecraftVersions is empty in gradle.properties"
+            exit 1
+          fi
+          jq -n \
+            --arg artifactPath "$artifact_path" \
+            --arg pluginVersion "$plugin_version" \
+            --argjson isDev "$is_dev" \
+            --argjson supportedMinecraftVersions "$supported_minecraft_versions" \
+            '{
+              artifact_path: $artifactPath,
+              plugin_version: $pluginVersion,
+              is_dev: $isDev,
+              supported_minecraft_versions: $supportedMinecraftVersions
+            }' > release-metadata.json
 
       - name: Upload to server
         run: |
-          commits_json=$(echo "${{ steps.commits.outputs.commits }}" | base64 --decode)
           artifact_url="https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ steps.upload-jar.outputs.artifact-id }}/zip"
           json_payload=$(jq -n \
                           --arg secret "${{ secrets.SERVER_SECRET }}" \
@@ -55,13 +99,48 @@ jobs:
                           --arg artifactUrl "$artifact_url" \
                           --argjson buildNumber ${{ github.run_number }} \
                           --arg branch "${{ github.ref_name }}" \
-                          --argjson commits "$commits_json" \
+                          --slurpfile commits commits.json \
+                          --slurpfile releaseMetadata release-metadata.json \
                           '{
                             secret: $secret,
                             repo: $repo,
                             artifact_url: $artifactUrl,
                             build_number: $buildNumber,
                             branch: $branch,
-                            commits: $commits
+                            commits: $commits[0],
+                            supported_minecraft_versions: $releaseMetadata[0].supported_minecraft_versions
                           }')
-          curl -X POST ${{ secrets.SERVER_UPLOAD_URL }} -H "Content-Type: application/json" -d "$json_payload"
+          curl -X POST "${{ secrets.SERVER_UPLOAD_URL }}" -H "Content-Type: application/json" -d "$json_payload"
+
+      - name: Upload to PixelEast
+        env:
+          PIXELEAST_TOKEN: ${{ secrets.PIXELEAST_TOKEN }}
+        run: |
+          if [ -z "$PIXELEAST_TOKEN" ]; then
+            echo "::error::PIXELEAST_TOKEN secret is not configured"
+            exit 1
+          fi
+
+          artifact_path=$(jq -r '.artifact_path' release-metadata.json)
+          plugin_version=$(jq -r '.plugin_version' release-metadata.json)
+          is_dev=$(jq -r '.is_dev' release-metadata.json)
+          upload_url="https://api.pixeleast.com/v1/product/1ffc5d73-5ad0-4953-8422-7f9cac70e5cb/versions"
+
+          curl_args=(
+            --fail-with-body
+            --show-error
+            --silent
+            -X POST "$upload_url"
+            -H "Authorization: Bearer $PIXELEAST_TOKEN"
+            -H "Accept: application/json"
+            -F "name=$plugin_version"
+            -F "file=@$artifact_path"
+            -F "changelog=<changelog.txt"
+            -F "is_dev=$is_dev"
+          )
+
+          while IFS= read -r version_id; do
+            curl_args+=(-F "selected_versions[]=$version_id")
+          done < <(jq -r '.supported_minecraft_versions[]' release-metadata.json)
+
+          curl "${curl_args[@]}"
