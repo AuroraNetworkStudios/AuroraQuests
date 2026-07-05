@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e95d612d-f5a7-4b58-a7ac-edf73c60ac6a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/hooks/economyshopgui/EconomyShopGUIListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/hooks/economyshopgui/EconomyShopGUIListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/hooks/HookManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/hooks/HookManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -209,7 +207,7 @@
       <workItem from="1780210233077" duration="300000" />
       <workItem from="1780210541606" duration="871000" />
       <workItem from="1780819832645" duration="382000" />
-      <workItem from="1783230794511" duration="153000" />
+      <workItem from="1783230794511" duration="312000" />
     </task>
     <servers />
   </component>
