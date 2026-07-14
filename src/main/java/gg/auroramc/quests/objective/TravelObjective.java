@@ -24,7 +24,7 @@ public class TravelObjective extends Objective {
             Map.entry("strider", Statistic.STRIDER_ONE_CM),
             Map.entry("walk-on-water", Statistic.WALK_ON_WATER_ONE_CM),
             Map.entry("walk-under-water", Statistic.WALK_UNDER_WATER_ONE_CM),
-            Map.entry("fly", Statistic.FLY_ONE_CM),
+            Map.entry("fly", Statistic.AVIATE_ONE_CM),
             Map.entry("happy-ghast", Statistic.HAPPY_GHAST_ONE_CM),
             Map.entry("minecart", Statistic.MINECART_ONE_CM),
             Map.entry("nautilus", Statistic.NAUTILUS_ONE_CM)
