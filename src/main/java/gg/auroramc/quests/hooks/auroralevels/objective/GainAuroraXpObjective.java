@@ -19,6 +19,8 @@ public class GainAuroraXpObjective extends Objective {
     }
 
     public void handle(PlayerXpGainEvent event) {
+        if (event.getPlayer() != data.profile().getPlayer()) return;
+
         progress(event.getXp(), meta());
     }
 }

@@ -20,6 +20,8 @@ public final class BlockBrushObjective extends TypedObjective {
     }
 
     public void onBlockBrush(final BlockDropItemEvent e) {
+        if (e.getPlayer() != data.profile().getPlayer()) return;
+
         // Brushable blocks drop nothing when broken and (by default) always generate an item when brushed. These two checks should be enough.
         if (e.getBlockState() instanceof BrushableBlock && !e.getItems().isEmpty())
             progress(1, meta(e.getBlock().getLocation(), e.getBlock().getType()));

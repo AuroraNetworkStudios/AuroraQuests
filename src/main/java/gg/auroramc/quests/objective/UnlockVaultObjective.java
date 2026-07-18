@@ -20,7 +20,7 @@ public final class UnlockVaultObjective extends StringTypedObjective {
     }
 
     public void onVaultStateChange(final VaultChangeStateEvent event) {
-        if (event.getBlock().getState() instanceof org.bukkit.block.Vault vault && event.getPlayer() != null && event.getNewState() == Vault.State.UNLOCKING) {
+        if (event.getBlock().getState() instanceof org.bukkit.block.Vault vault && event.getPlayer() == data.profile().getPlayer() && event.getNewState() == Vault.State.UNLOCKING) {
             progress(1, meta(event.getBlock().getLocation(), vault.getLootTable().key().asString()));
         }
     }

@@ -35,7 +35,7 @@ public class LevelledMobKillObjective extends TypedObjective {
     public void handle(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
         Player player = entity.getKiller();
-        if (player == null) return;
+        if (player != data.profile().getPlayer()) return;
         if (entity instanceof Player) return;
         if (player.hasMetadata("NPC")) return;
 

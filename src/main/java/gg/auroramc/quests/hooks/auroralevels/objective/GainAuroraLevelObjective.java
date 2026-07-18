@@ -19,6 +19,8 @@ public class GainAuroraLevelObjective extends Objective {
     }
 
     public void handle(PlayerLevelUpEvent event) {
+        if (event.getPlayer() != data.profile().getPlayer()) return;
+
         progress(1, meta());
     }
 }
