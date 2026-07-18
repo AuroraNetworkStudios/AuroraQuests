@@ -1,9 +1,7 @@
 package gg.auroramc.quests.objective;
 
 import gg.auroramc.aurora.api.item.TypeId;
-import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.objective.ObjectiveDefinition;
-import gg.auroramc.quests.api.objective.ObjectiveType;
 import gg.auroramc.quests.api.objective.TypedObjective;
 import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.api.quest.Quest;
@@ -11,11 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Goat;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-
-import java.util.Map;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public class MilkingObjective extends TypedObjective {
 
@@ -25,14 +20,21 @@ public class MilkingObjective extends TypedObjective {
 
     @Override
     protected void activate() {
-        onEvent(PlayerInteractEntityEvent.class, this::onMilk, EventPriority.MONITOR);
+        onEvent(PlayerInteractAtEntityEvent.class, this::onMilk, EventPriority.MONITOR);
     }
 
-    public void onMilk(PlayerInteractEntityEvent event) {
-        if (!(event.getRightClicked() instanceof Cow || event.getRightClicked() instanceof Goat) || (event.getPlayer().getInventory().getItemInMainHand()).getType() != Material.BUCKET) {
+    public void onMilk(PlayerInteractAtEntityEvent event) {
+        var entity = event.getRightClicked();
+        var itemInHand = event.getPlayer().getInventory().getItemInMainHand();
+
+        if (itemInHand.getType() != Material.BUCKET) {
             return;
         }
 
-        progress(1, meta(event.getRightClicked() instanceof Cow ? TypeId.from(EntityType.COW) : TypeId.from(EntityType.GOAT)));
+        if (entity instanceof Cow) {
+            progress(1, meta(TypeId.from(EntityType.COW)));
+        } else if (entity instanceof Goat) {
+            progress(1, meta(TypeId.from(EntityType.GOAT)));
+        }
     }
 }
