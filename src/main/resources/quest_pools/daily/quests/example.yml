@@ -18,6 +18,12 @@ menu-item:
     - ""
     - "&7Difficulty: &f{difficulty}"
 
+# Optional appearance for this quest after it is completed. Any omitted
+# properties are inherited from menu-item.
+# completed-menu-item:
+#   material: LIME_STAINED_GLASS_PANE
+#   name: "&e{name} &a✔"
+
 locked-lore:
   - ""
   - "&cYou can't start this quest yet."

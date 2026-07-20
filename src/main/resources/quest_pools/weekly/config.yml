@@ -13,6 +13,11 @@ reset-frequency: 0 0 0 ? * MON
 # Should quests be rolled again when all of them are completed?
 reroll-on-completion: false
 
+# Configure how completed quests are shown in this timed-random pool.
+completed-quests:
+  display: true
+  sort-last: false
+
 # How should this pool be displayed in the main menu and where?
 menu-item:
   show-in-main-menu: true

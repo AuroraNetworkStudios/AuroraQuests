@@ -1,6 +1,7 @@
 package gg.auroramc.quests.menu;
 
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.aurora.api.message.Placeholder;
@@ -121,7 +122,11 @@ public class PoolMenu {
         }
 
         // Display quests
-        var quests = getPage(page, mc.getDisplayArea().size());
+        var displayedQuests = getQuests();
+        var pageSize = mc.getDisplayArea().size();
+        var pageCount = Math.max(0, (int) Math.ceil((double) displayedQuests.size() / pageSize) - 1);
+        page = Math.min(page, pageCount);
+        var quests = displayedQuests.stream().skip((long) page * pageSize).limit(pageSize).toList();
 
         for (int i = 0; i < mc.getDisplayArea().size(); i++) {
             var slot = mc.getDisplayArea().get(i);
@@ -146,10 +151,11 @@ public class PoolMenu {
             }
 
             var qPlaceholders = quest.getPlaceholders();
+            var menuItem = getMenuItem(quest, cmf.getCompletedQuestItem());
 
-            var builder = ItemBuilder.of(quest.getDefinition().getMenuItem()).slot(slot)
-                    .setName(Placeholder.execute(quest.getDefinition().getMenuItem().getName(), Placeholder.of("{name}", quest.getDefinition().getName())))
-                    .setLore(quest.getDefinition().getMenuItem().getLore().stream().map(l -> Placeholder.execute(l, qPlaceholders)).toList())
+            var builder = ItemBuilder.of(menuItem).slot(slot)
+                    .setName(Placeholder.execute(menuItem.getName(), Placeholder.of("{name}", quest.getDefinition().getName())))
+                    .setLore(menuItem.getLore().stream().map(l -> Placeholder.execute(l, qPlaceholders)).toList())
                     .localization(localization)
                     .placeholder(qPlaceholders).extraLore(extraLore);
 
@@ -164,8 +170,7 @@ public class PoolMenu {
         }
 
         // Pagination
-        if (getQuests().size() > mc.getDisplayArea().size()) {
-            var pageCount = getTotalPageCount(mc.getDisplayArea().size());
+        if (displayedQuests.size() > pageSize) {
             List<Placeholder<?>> placeholders = List.of(Placeholder.of("{current}", page + 1), Placeholder.of("{max}", pageCount + 1));
 
             menu.addItem(ItemBuilder.of(cmf.getItems().get("previous-page").merge(mc.getItems().get("previous-page")))
@@ -259,18 +264,29 @@ public class PoolMenu {
                         .sorted(Comparator.comparing(Quest::getId)).toList();
             }
         } else {
-            quests = pool.getActiveQuests().stream().sorted(Comparator.comparing(a -> gc.getSortOderMap().get(a.getDefinition().getDifficulty()))).toList();
+            var completedQuests = pool.getDefinition().getCompletedQuests();
+            Comparator<Quest> comparator = Comparator.comparing(a -> gc.getSortOderMap().get(a.getDefinition().getDifficulty()));
+
+            if (completedQuests != null && completedQuests.getSortLast()) {
+                comparator = Comparator.comparing(Quest::isCompleted).thenComparing(comparator);
+            }
+
+            var questStream = pool.getActiveQuests().stream();
+            if (completedQuests != null && !completedQuests.getDisplay()) {
+                questStream = questStream.filter(q -> !q.isCompleted());
+            }
+
+            quests = questStream.sorted(comparator).toList();
         }
         return quests;
     }
 
-    private List<Quest> getPage(int page, int pageSize) {
-        Collection<Quest> quests = getQuests();
-        return quests.stream().skip((long) page * pageSize).limit(pageSize).toList();
-    }
+    private ItemConfig getMenuItem(Quest quest, ItemConfig completedQuestItem) {
+        var menuItem = quest.getDefinition().getMenuItem();
+        if (!quest.isCompleted()) {
+            return menuItem;
+        }
 
-    private int getTotalPageCount(int pageSize) {
-        var quests = getQuests();
-        return (int) Math.ceil((double) quests.size() / pageSize) - 1;
+        return menuItem.merge(completedQuestItem).merge(quest.getDefinition().getCompletedMenuItem());
     }
 }

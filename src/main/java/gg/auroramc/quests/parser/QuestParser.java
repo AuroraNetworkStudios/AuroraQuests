@@ -23,6 +23,7 @@ public class QuestParser {
                 .rewards(parseRewards(config.getRewards(), rewardFactory))
                 .tasks(parseTasks(config.getTasks()))
                 .menuItem(config.getMenuItem())
+                .completedMenuItem(config.getCompletedMenuItem())
                 .completedLore(config.getCompletedLore())
                 .lockedLore(config.getLockedLore())
                 .uncompletedLore(config.getUncompletedLore())

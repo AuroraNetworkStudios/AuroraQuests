@@ -12,6 +12,7 @@ import java.util.Map;
 public class CommonMenuConfig extends AuroraConfig {
     private Map<String, Config.DisplayComponent> displayComponents;
     private Map<String, ItemConfig> items;
+    private ItemConfig completedQuestItem;
     private TaskStatuses taskStatuses;
     private ProgressBar progressBar;
 

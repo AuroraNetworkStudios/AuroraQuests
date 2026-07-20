@@ -15,6 +15,12 @@ progress-bar:
   filled-character: "&a&l■"
   unfilled-character: "&7&l■"
 
+# Optional fallback appearance for completed quests. Quest-specific
+# completed-menu-item settings take priority over this item.
+# completed-quest-item:
+#   material: LIME_STAINED_GLASS_PANE
+#   name: "&e{name} &a✔"
+
 # You can override these items in other menu configurations
 items:
   previous-page:

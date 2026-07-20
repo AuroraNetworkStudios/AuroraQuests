@@ -23,6 +23,7 @@ public class PoolConfig extends AuroraConfig {
     private Map<String, Integer> difficulties;
     private String resetFrequency;
     private Boolean rerollOnCompletion = false;
+    private CompletedQuests completedQuests = new CompletedQuests();
     private PoolMenuItem menuItem;
     private PoolMenu menu;
     private Leveling leveling;
@@ -54,6 +55,12 @@ public class PoolConfig extends AuroraConfig {
         private List<Integer> displayArea;
         private Boolean hasBackButton = true;
         private Boolean hasCloseButton = true;
+    }
+
+    @Getter
+    public static class CompletedQuests {
+        private Boolean display = true;
+        private Boolean sortLast = false;
     }
 
     @Getter

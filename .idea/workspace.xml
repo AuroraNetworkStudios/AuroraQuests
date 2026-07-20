@@ -6,7 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="e95d612d-f5a7-4b58-a7ac-edf73c60ac6a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/objective/TravelObjective.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/objective/TravelObjective.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/api/quest/QuestDefinition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/api/quest/QuestDefinition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/api/questpool/PoolConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/api/questpool/PoolConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/api/questpool/PoolDefinition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/api/questpool/PoolDefinition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/config/CommonMenuConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/config/CommonMenuConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/config/quest/QuestConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/config/quest/QuestConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/menu/PoolMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/menu/PoolMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/parser/PoolParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/parser/PoolParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/parser/QuestParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/quests/parser/QuestParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/menu_common.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/menu_common.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/quest_pools/daily/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/quest_pools/daily/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/quest_pools/daily/quests/example.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/quest_pools/daily/quests/example.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/quest_pools/weekly/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/quest_pools/weekly/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
