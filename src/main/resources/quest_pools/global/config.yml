@@ -7,6 +7,10 @@ difficulties:
   medium: 1
   hard: 1
 
+# Configure how completed quests are shown in this pool.
+completed-quests:
+  display: true
+
 # How should this pool be displayed in the main menu and where?
 menu-item:
   show-in-main-menu: true

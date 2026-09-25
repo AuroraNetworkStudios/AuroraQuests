@@ -258,10 +258,15 @@ public class PoolMenu {
                         .filter(Quest::isCompleted)
                         .sorted(Comparator.comparing(Quest::getId)).toList();
             } else {
-                quests = pool.getQuests().stream()
-                        .filter(q -> !q.isCompleted())
-                        .filter(q -> q.isUnlocked() || q.getDefinition().getRequirements().isAlwaysShowInMenu())
-                        .sorted(Comparator.comparing(Quest::getId)).toList();
+                var completedQuests = pool.getDefinition().getCompletedQuests();
+                var questStream = pool.getQuests().stream()
+                        .filter(q -> q.isCompleted() || q.isUnlocked() || q.getDefinition().getRequirements().isAlwaysShowInMenu());
+
+                if (completedQuests != null && !completedQuests.getDisplay()) {
+                    questStream = questStream.filter(q -> !q.isCompleted());
+                }
+
+                quests = questStream.sorted(Comparator.comparing(Quest::getId)).toList();
             }
         } else {
             var completedQuests = pool.getDefinition().getCompletedQuests();
