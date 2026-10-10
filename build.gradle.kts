@@ -110,6 +110,8 @@ dependencies {
         exclude(group = "su.nightexpress.nightcore", module = "main")
         exclude(group = "com.github.Xyness", module = "SimpleClaimSystem")
     }
+    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
+    compileOnly("net.Indyuce:MMOItems-API:6.9.5-SNAPSHOT")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")

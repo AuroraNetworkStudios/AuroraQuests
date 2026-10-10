@@ -9,6 +9,7 @@ import gg.auroramc.quests.hooks.economyshopgui.EconomyShopGuiHook;
 import gg.auroramc.quests.hooks.excellentshop.ExcellentShopHook;
 import gg.auroramc.quests.hooks.fancynpcs.FancyNPCsHook;
 import gg.auroramc.quests.hooks.luckperms.LuckPermsHook;
+import gg.auroramc.quests.hooks.mmoitems.MMOItemsHook;
 import gg.auroramc.quests.hooks.mmolib.MMOLibHook;
 import gg.auroramc.quests.hooks.mythicdungeons.DungeonsHook;
 import gg.auroramc.quests.hooks.mythicmobs.MythicHook;
@@ -44,7 +45,8 @@ public enum Hooks {
     ZNPCS(ZnpcsHook.class, "ServersNPC"),
     EXCELLENT_SHOP(ExcellentShopHook.class, "ExcellentShop"),
     NEXO(NexoHook.class, "Nexo"),
-    ZNPCSPlus(ZnpcPlusHook.class, "ZNPCsPlus");
+    ZNPCSPlus(ZnpcPlusHook.class, "ZNPCsPlus"),
+    MMOITEMS(MMOItemsHook.class, "MMOItems");
 
     private final Class<? extends Hook> clazz;
     private final Set<String> plugins;
