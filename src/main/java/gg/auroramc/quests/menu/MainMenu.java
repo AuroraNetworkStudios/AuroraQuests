@@ -125,21 +125,21 @@ public class MainMenu {
                     Placeholder.of("{total}", maxPage)
             );
 
-            menu.addItem(ItemBuilder.of(merge(cmf, config, "previous-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
-                if (page > 1) {
+            if (page > 1) {
+                menu.addItem(ItemBuilder.of(merge(cmf, config, "previous-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
                     page--;
                     createMenu().open();
-                }
-            });
+                });
+            }
 
             menu.addItem(ItemBuilder.of(merge(cmf, config, "current-page")).localization(localization).placeholder(placeholders).build(player));
 
-            menu.addItem(ItemBuilder.of(merge(cmf, config, "next-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
-                if (page < maxPage) {
+            if (page < maxPage) {
+                menu.addItem(ItemBuilder.of(merge(cmf, config, "next-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
                     page++;
                     createMenu().open();
-                }
-            });
+                });
+            }
         }
 
         return menu;
