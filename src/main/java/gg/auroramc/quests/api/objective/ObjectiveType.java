@@ -57,4 +57,5 @@ public class ObjectiveType {
     public static final String COMPOST = "COMPOST";
     public static final String CURE = "CURE";
     public static final String HATCH = "HATCH";
+    public static final String INTERACT_BLOCK = "INTERACT_BLOCK";
 }
