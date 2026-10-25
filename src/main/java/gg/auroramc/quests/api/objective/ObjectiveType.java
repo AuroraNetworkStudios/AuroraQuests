@@ -53,4 +53,5 @@ public class ObjectiveType {
     public static final String BARTER = "BARTER";
     public static final String BLOCK_CHANGE = "BLOCK_CHANGE";
     public static final String BLOCK_FERTILIZE = "BLOCK_FERTILIZE";
+    public static final String BUCKET_ENTITY = "BUCKET_ENTITY";
 }
