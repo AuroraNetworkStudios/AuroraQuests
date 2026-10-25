@@ -58,4 +58,5 @@ public class ObjectiveType {
     public static final String CURE = "CURE";
     public static final String HATCH = "HATCH";
     public static final String INTERACT_BLOCK = "INTERACT_BLOCK";
+    public static final String INTERACT_ENTITY = "INTERACT_ENTITY";
 }
