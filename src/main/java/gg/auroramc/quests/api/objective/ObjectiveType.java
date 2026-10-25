@@ -62,4 +62,5 @@ public class ObjectiveType {
     public static final String DAMAGE_ITEM = "DAMAGE_ITEM";
     public static final String MEND_ITEM = "MEND_ITEM";
     public static final String LAUNCH_PROJECTILE = "LAUNCH_PROJECTILE";
+    public static final String RESURRECT = "RESURRECT";
 }
