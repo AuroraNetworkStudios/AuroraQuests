@@ -60,4 +60,5 @@ public class ObjectiveType {
     public static final String INTERACT_BLOCK = "INTERACT_BLOCK";
     public static final String INTERACT_ENTITY = "INTERACT_ENTITY";
     public static final String DAMAGE_ITEM = "DAMAGE_ITEM";
+    public static final String MEND_ITEM = "MEND_ITEM";
 }
