@@ -241,6 +241,7 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         if (Version.isAtLeastVersion(21, 5))
             ObjectiveFactory.registerObjective(ObjectiveType.UNLOCK_VAULT, UnlockVaultObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.BARTER, BarterObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.BLOCK_CHANGE, BlockChangeObjective.class);
 
     }
 
