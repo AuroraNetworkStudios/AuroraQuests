@@ -6,8 +6,10 @@
 package gg.auroramc.quests.util;
 
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -142,5 +144,32 @@ public final class InventoryUtils {
             return result.getAmount();
         }
         return 0;
+    }
+
+    /** How many items a click takes out of a result slot (furnace output, smithing result). */
+    public static int calculateResultTakeAmount(final InventoryClickEvent event) {
+        final ItemStack result = event.getCurrentItem();
+        final PlayerInventory inventory = event.getWhoClicked().getInventory();
+        switch (event.getClick()) {
+            case SHIFT_LEFT:
+            case SHIFT_RIGHT:
+                return Math.min(calculateSpaceForItem(inventory, result), result.getAmount());
+            case CONTROL_DROP:
+                return calculateSpaceForItem(inventory, result);
+            case NUMBER_KEY:
+                return calculateSwapCraftAmount(result, inventory.getItem(event.getHotbarButton()));
+            case SWAP_OFFHAND:
+                return calculateSwapCraftAmount(result, inventory.getItemInOffHand());
+            case DROP:
+                return 1;
+            case RIGHT:
+                if (isEmptySlot(event.getCursor())) {
+                    return (result.getAmount() + 1) / 2;
+                }
+            case LEFT:
+                return calculateSimpleCraftAmount(result, event.getCursor());
+            default:
+                return 0;
+        }
     }
 }
