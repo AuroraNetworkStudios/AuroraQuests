@@ -245,6 +245,7 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         ObjectiveFactory.registerObjective(ObjectiveType.BLOCK_FERTILIZE, BlockFertilizeObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.BUCKET_ENTITY, BucketEntityObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.COMPOST, CompostObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.CURE, CureObjective.class);
 
     }
 

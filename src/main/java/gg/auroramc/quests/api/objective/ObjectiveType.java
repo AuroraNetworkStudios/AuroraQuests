@@ -55,4 +55,5 @@ public class ObjectiveType {
     public static final String BLOCK_FERTILIZE = "BLOCK_FERTILIZE";
     public static final String BUCKET_ENTITY = "BUCKET_ENTITY";
     public static final String COMPOST = "COMPOST";
+    public static final String CURE = "CURE";
 }
