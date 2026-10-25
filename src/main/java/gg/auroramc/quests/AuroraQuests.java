@@ -240,6 +240,7 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         // VaultChangeStateEvent is available starting from Paper 1.21.5
         if (Version.isAtLeastVersion(21, 5))
             ObjectiveFactory.registerObjective(ObjectiveType.UNLOCK_VAULT, UnlockVaultObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.BARTER, BarterObjective.class);
 
     }
 
