@@ -253,6 +253,7 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         ObjectiveFactory.registerObjective(ObjectiveType.MEND_ITEM, MendItemObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.LAUNCH_PROJECTILE, LaunchProjectileObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.RESURRECT, ResurrectObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.SMITH, SmithObjective.class);
 
     }
 

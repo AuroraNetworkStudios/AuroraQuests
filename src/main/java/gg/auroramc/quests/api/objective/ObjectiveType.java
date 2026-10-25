@@ -63,4 +63,5 @@ public class ObjectiveType {
     public static final String MEND_ITEM = "MEND_ITEM";
     public static final String LAUNCH_PROJECTILE = "LAUNCH_PROJECTILE";
     public static final String RESURRECT = "RESURRECT";
+    public static final String SMITH = "SMITH";
 }
