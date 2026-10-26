@@ -147,27 +147,33 @@ public class LevelMenu {
 
             List<Placeholder<?>> pl = List.of(Placeholder.of("{current}", page + 1), Placeholder.of("{max}", pageCount + 1));
 
-            menu.addItem(ItemBuilder.of(cmf.getItems().get("previous-page").merge(cm.getItems().get("previous-page")))
-                    .localization(localization)
-                    .placeholder(pl).build(player), (e) -> {
-                if (page > 0) {
-                    page--;
-                    createMenu().open();
-                }
-            });
+            var hideEdges = AuroraQuests.getInstance().getConfigManager().getConfig().getHideOutOfRangePageButtons();
+
+            if (!hideEdges || page > 0) {
+                menu.addItem(ItemBuilder.of(cmf.getItems().get("previous-page").merge(cm.getItems().get("previous-page")))
+                        .localization(localization)
+                        .placeholder(pl).build(player), (e) -> {
+                    if (page > 0) {
+                        page--;
+                        createMenu().open();
+                    }
+                });
+            }
 
             menu.addItem(ItemBuilder.of(cmf.getItems().get("current-page").merge(cm.getItems().get("current-page")))
                     .localization(localization)
                     .placeholder(pl).build(player));
 
-            menu.addItem(ItemBuilder.of(cmf.getItems().get("next-page").merge(cm.getItems().get("next-page")))
-                    .localization(localization)
-                    .placeholder(pl).build(player), (e) -> {
-                if (page < pageCount) {
-                    page++;
-                    createMenu().open();
-                }
-            });
+            if (!hideEdges || page < pageCount) {
+                menu.addItem(ItemBuilder.of(cmf.getItems().get("next-page").merge(cm.getItems().get("next-page")))
+                        .localization(localization)
+                        .placeholder(pl).build(player), (e) -> {
+                    if (page < pageCount) {
+                        page++;
+                        createMenu().open();
+                    }
+                });
+            }
         }
 
         return menu;

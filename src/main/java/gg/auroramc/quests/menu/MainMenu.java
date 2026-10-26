@@ -125,21 +125,27 @@ public class MainMenu {
                     Placeholder.of("{total}", maxPage)
             );
 
-            menu.addItem(ItemBuilder.of(merge(cmf, config, "previous-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
-                if (page > 1) {
-                    page--;
-                    createMenu().open();
-                }
-            });
+            var hideEdges = AuroraQuests.getInstance().getConfigManager().getConfig().getHideOutOfRangePageButtons();
+
+            if (!hideEdges || page > 1) {
+                menu.addItem(ItemBuilder.of(merge(cmf, config, "previous-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
+                    if (page > 1) {
+                        page--;
+                        createMenu().open();
+                    }
+                });
+            }
 
             menu.addItem(ItemBuilder.of(merge(cmf, config, "current-page")).localization(localization).placeholder(placeholders).build(player));
 
-            menu.addItem(ItemBuilder.of(merge(cmf, config, "next-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
-                if (page < maxPage) {
-                    page++;
-                    createMenu().open();
-                }
-            });
+            if (!hideEdges || page < maxPage) {
+                menu.addItem(ItemBuilder.of(merge(cmf, config, "next-page")).localization(localization).placeholder(placeholders).build(player), (e) -> {
+                    if (page < maxPage) {
+                        page++;
+                        createMenu().open();
+                    }
+                });
+            }
         }
 
         return menu;

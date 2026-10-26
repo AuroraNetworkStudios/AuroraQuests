@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 public class Config extends AuroraConfig {
     private Boolean debug = false;
     private Boolean purgeInvalidDataOnLogin = false;
+    private Boolean hideOutOfRangePageButtons = false;
     private String language = "en";
     private Boolean perPlayerLocale = false;
     private Map<String, String> difficulties;
@@ -129,6 +130,11 @@ public class Config extends AuroraConfig {
                 (yaml) -> {
                     yaml.set("per-player-locale", false);
                     yaml.set("config-version", 4);
+                },
+                (yaml) -> {
+                    yaml.set("hide-out-of-range-page-buttons", false);
+                    yaml.setComments("hide-out-of-range-page-buttons", List.of("Hide the previous/next page button when there is no such page"));
+                    yaml.set("config-version", 5);
                 }
         );
     }
