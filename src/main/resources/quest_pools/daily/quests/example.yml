@@ -52,7 +52,7 @@ tasks:
         value: [ "spawn" ]
       min-ylevel: 0
       max-ylevel: 64
-      # Light level at the block (0-15), either bound is optional
+      # Light level where the player stands (0-15), either bound is optional
       min-light: 0
       max-light: 7
       # day or night
