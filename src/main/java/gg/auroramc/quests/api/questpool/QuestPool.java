@@ -32,9 +32,11 @@ public class QuestPool {
             var quest = new Quest(this, questDef, profile.toQuestDataWrapper(getId(), questDef.getId()));
             quests.put(questDef.getId(), quest);
 
-            quest.subscribe(EventType.TASK_PROGRESS, profile::trackIfIdle);
+            quest.subscribe(EventType.TASK_PROGRESS, profile.getTracker()::onObjectiveProgress);
 
-            quest.subscribe(EventType.QUEST_COMPLETED, (t) -> {
+            quest.subscribe(EventType.TASK_COMPLETED, objective -> profile.getTracker().refresh());
+
+            quest.subscribe(EventType.QUEST_COMPLETED, triggerObjective -> {
                 var currentLevel = getLevel();
 
                 profile.getData().incrementCompletedCount(getId());
@@ -50,6 +52,8 @@ public class QuestPool {
 
                 if (isTimedRandom() && getNotCompletedQuests().isEmpty() && pool.getDefinition().getRerollOnCompletion())
                     reRollQuests(true);
+
+                profile.getTracker().refresh();
             });
         }
     }
@@ -248,6 +252,8 @@ public class QuestPool {
         for (var quest : getActiveQuests()) {
             quest.start();
         }
+
+        profile.getTracker().refresh();
 
         AuroraQuests.logger().debug("Rolled quests for player " + profile.getPlayer().getName() + " in pool " + definition.getId() + ": " + String.join(", ", questIds));
 

@@ -26,8 +26,8 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
             boolean on = !profile.getData().isTrackingDisabled();
             if (args[0].equals("tracking")) return String.valueOf(on);
             if (!on) return "";
-            var obj = profile.getTracked();
-            return obj != null ? obj.display() : "";
+            var objective = profile.getTracker().getTrackedObjective();
+            return objective != null ? objective.display() : "";
         }
         if (args.length < 2) return null;
         var profile = AuroraQuests.getInstance().getProfileManager().getProfile(player);

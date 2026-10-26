@@ -6,15 +6,13 @@ import gg.auroramc.aurora.api.user.AuroraUser;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.questpool.QuestPool;
-import gg.auroramc.quests.api.objective.Objective;
-import lombok.AccessLevel;
+import gg.auroramc.quests.api.tracking.QuestTracker;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 @Getter
 public class Profile {
@@ -22,13 +20,7 @@ public class Profile {
     private final Player player;
 
     private final Map<String, QuestPool> data = new LinkedHashMap<>();
-    @Getter(AccessLevel.NONE)
-    private volatile Objective tracked;
-    // set when the plugin picked the task, not the player; the first real progress replaces it
-    @Getter(AccessLevel.NONE)
-    private volatile boolean trackedSoft;
-    @Getter(AccessLevel.NONE)
-    private volatile long nextScanAt;
+    private final QuestTracker tracker = new QuestTracker(this);
 
     public Profile(AuroraUser user) {
         this.user = user;
@@ -61,9 +53,7 @@ public class Profile {
             questPool.startQuests();
         }
 
-        tracked = findNext(null);
-        trackedSoft = true;
-        nextScanAt = 0;
+        tracker.reset();
 
         if (!rolledPools.isEmpty() && player.hasPlayedBefore()) {
             var placeholder = Placeholder.of("{pool}", String.join(", ", rolledPools.stream().map(QuestPool::getName).toList()));
@@ -78,47 +68,6 @@ public class Profile {
 
         Bukkit.getAsyncScheduler().runDelayed(AuroraQuests.getInstance(),
                 (t) -> AuroraQuests.getInstance().getPoolManager().getRewardAutoCorrector().correctRewards(player), 50, TimeUnit.MILLISECONDS);
-    }
-
-    public void trackIfIdle(Objective o) {
-        var cur = tracked;
-        if (cur == null || trackedSoft || !isLive(cur)) {
-            tracked = o;
-            trackedSoft = false;
-        }
-    }
-
-    public Objective getTracked() {
-        var cur = tracked;
-        if (cur != null && isLive(cur)) return cur;
-        // nothing left to track: don't rescan on every placeholder read
-        long now = System.currentTimeMillis();
-        if (cur == null && now < nextScanAt) return null;
-        var next = findNext(cur == null ? null : cur.getQuest().getPool());
-        tracked = next;
-        trackedSoft = true;
-        if (next == null) nextScanAt = now + 1000;
-        return next;
-    }
-
-    // a re-roll can drop the tracked quest while it is still incomplete
-    private static boolean isLive(Objective o) {
-        var pool = o.getQuest().getPool();
-        return !o.isCompleted() && (!pool.isTimedRandom() || pool.isRolledQuest(o.getQuest()));
-    }
-
-    private Objective findNext(QuestPool preferred) {
-        var first = preferred != null && preferred.isUnlocked() ? firstOpen(Stream.of(preferred)) : null;
-        return first != null ? first : firstOpen(data.values().stream());
-    }
-
-    private static Objective firstOpen(Stream<QuestPool> pools) {
-        return pools.filter(QuestPool::isUnlocked)
-                .flatMap(p -> p.getActiveQuests().stream())
-                .filter(q -> !q.isCompleted())
-                .flatMap(q -> q.getObjectives().stream())
-                .filter(o -> !o.isCompleted())
-                .findFirst().orElse(null);
     }
 
     public Collection<QuestPool> getQuestPools() {
