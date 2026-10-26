@@ -23,6 +23,9 @@ quest-already-unlocked: "&cPlayer {player} has already unlocked quest {quest}."
 quest-completed: "&aQuest {quest} marked completed for {player}."
 quest-already-completed: "&cPlayer {player} has already completed quest {quest}."
 quest-reset: "&aQuest {quest} reset for {player}."
+tracking-enabled: "&aQuest tracking enabled."
+tracking-disabled: "&cQuest tracking disabled."
+track-usage: "&cUsage: /quests track [on|off]"
 error-prefix: "&cError: {message}"
 
 timer-format:
