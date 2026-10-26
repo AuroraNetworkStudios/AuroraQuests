@@ -6,13 +6,13 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
-public class PlayerTrackedObjectiveChangeEvent extends Event implements Cancellable {
+public class PlayerTrackedObjectiveChangeEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
 
     public static HandlerList getHandlerList() {
@@ -25,7 +25,6 @@ public class PlayerTrackedObjectiveChangeEvent extends Event implements Cancella
         return HANDLERS;
     }
 
-    private final Player player;
     @Nullable
     private final Objective previousObjective;
     @Setter
@@ -35,8 +34,7 @@ public class PlayerTrackedObjectiveChangeEvent extends Event implements Cancella
     private boolean cancelled;
 
     public PlayerTrackedObjectiveChangeEvent(Player player, @Nullable Objective previousObjective, @Nullable Objective newObjective) {
-        super(!Bukkit.isPrimaryThread());
-        this.player = player;
+        super(player, !Bukkit.isPrimaryThread());
         this.previousObjective = previousObjective;
         this.newObjective = newObjective;
     }

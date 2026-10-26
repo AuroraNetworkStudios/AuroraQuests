@@ -4,6 +4,7 @@ import gg.auroramc.quests.api.event.PlayerTrackedObjectiveChangeEvent;
 import gg.auroramc.quests.api.objective.Objective;
 import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.api.questpool.QuestPool;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,16 +12,13 @@ import java.util.stream.Stream;
 
 public class QuestTracker {
     private final Profile profile;
+    @Getter
     private volatile Objective trackedObjective;
     // true when the plugin picked the objective, not the player; the player's first progress replaces it
     private volatile boolean pickedAutomatically;
 
     public QuestTracker(Profile profile) {
         this.profile = profile;
-    }
-
-    public Objective getTrackedObjective() {
-        return trackedObjective;
     }
 
     public void setTrackedObjective(@Nullable Objective objective) {
