@@ -173,12 +173,16 @@ public class PoolMenu {
         if (displayedQuests.size() > pageSize) {
             List<Placeholder<?>> placeholders = List.of(Placeholder.of("{current}", page + 1), Placeholder.of("{max}", pageCount + 1));
 
-            if (page > 0) {
+            var hideEdges = AuroraQuests.getInstance().getConfigManager().getConfig().getHideOutOfRangePageButtons();
+
+            if (!hideEdges || page > 0) {
                 menu.addItem(ItemBuilder.of(cmf.getItems().get("previous-page").merge(mc.getItems().get("previous-page")))
                         .localization(localization)
                         .placeholder(placeholders).build(player), (e) -> {
-                    page--;
-                    createMenu().open();
+                    if (page > 0) {
+                        page--;
+                        createMenu().open();
+                    }
                 });
             }
 
@@ -186,12 +190,14 @@ public class PoolMenu {
                     .localization(localization)
                     .placeholder(placeholders).build(player));
 
-            if (page < pageCount) {
+            if (!hideEdges || page < pageCount) {
                 menu.addItem(ItemBuilder.of(cmf.getItems().get("next-page").merge(mc.getItems().get("next-page")))
                         .localization(localization)
                         .placeholder(placeholders).build(player), (e) -> {
-                    page++;
-                    createMenu().open();
+                    if (page < pageCount) {
+                        page++;
+                        createMenu().open();
+                    }
                 });
             }
         }

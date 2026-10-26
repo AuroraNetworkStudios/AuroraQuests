@@ -1,10 +1,13 @@
 # Don't touch this
-config-version: 4
+config-version: 5
 
 debug: false
 language: en
 per-player-locale: false
 prevent-creative-mode: true
+
+# Hide the previous/next page button when there is no such page
+hide-out-of-range-page-buttons: false
 
 # Only enable this if you are heavily modifying your quest pools/quests data in production (WHICH YOU SHOULDN'T)
 purge-invalid-data-on-login: false
