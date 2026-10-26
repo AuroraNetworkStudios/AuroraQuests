@@ -19,6 +19,16 @@ public class QuestData extends UserDataHolder {
     private final Map<String, Long> completedCount = Maps.newConcurrentMap();
     private final Map<String, Set<String>> questUnlocks = Maps.newConcurrentMap();
     private final Set<String> poolUnlocks = Sets.newConcurrentHashSet();
+    private volatile boolean trackingDisabled = false;
+
+    public boolean isTrackingDisabled() {
+        return trackingDisabled;
+    }
+
+    public void setTrackingDisabled(boolean disabled) {
+        trackingDisabled = disabled;
+        dirty.set(true);
+    }
 
     public PoolRollData getPoolRollData(String poolId) {
         return rolledQuests.get(poolId);
@@ -167,6 +177,8 @@ public class QuestData extends UserDataHolder {
         for (var entry : completedCount.entrySet()) {
             completedCountSection.set(entry.getKey(), entry.getValue());
         }
+
+        data.set("tracking_disabled", trackingDisabled);
     }
 
     @Override
@@ -213,6 +225,7 @@ public class QuestData extends UserDataHolder {
         }
 
         poolUnlocks.addAll(data.getStringList("pool_unlocks"));
+        trackingDisabled = data.getBoolean("tracking_disabled", false);
     }
 
     public void purgeInvalidData(Collection<Pool> pools) {

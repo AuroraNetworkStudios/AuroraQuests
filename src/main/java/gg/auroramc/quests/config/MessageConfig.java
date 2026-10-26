@@ -39,6 +39,9 @@ public class MessageConfig extends AuroraConfig {
     private String questUnlocked = "&aQuest {quest} unlocked for {player}.";
     private String questCompleted = "&aQuest {quest} marked completed for {player}.";
     private String questReset = "&aQuest {quest} reset for {player}.";
+    private String trackingEnabled = "&aQuest tracking enabled.";
+    private String trackingDisabled = "&cQuest tracking disabled.";
+    private String trackUsage = "&cUsage: /quests track [on|off]";
     private String questAlreadyUnlocked = "&cPlayer {player} has already unlocked quest {quest}.";
     private String questAlreadyCompleted = "&cPlayer {player} has already completed quest {quest}.";
     private String errorPrefix = "&cError: {message}";

@@ -20,6 +20,15 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
 
     @Override
     public String onPlaceholderRequest(Player player, String[] args) {
+        if (args.length == 1 && (args[0].equals("tracked") || args[0].equals("tracking"))) {
+            var profile = AuroraQuests.getInstance().getProfileManager().getProfile(player);
+            if (profile == null) return "";
+            boolean on = !profile.getData().isTrackingDisabled();
+            if (args[0].equals("tracking")) return String.valueOf(on);
+            if (!on) return "";
+            var objective = profile.getTracker().getTrackedObjective();
+            return objective != null ? objective.display() : "";
+        }
         if (args.length < 2) return null;
         var profile = AuroraQuests.getInstance().getProfileManager().getProfile(player);
         if(profile == null) return "";
@@ -78,8 +87,10 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
     public List<String> getPatterns() {
         var manager = AuroraQuests.getInstance().getPoolManager();
 
-        var list = new ArrayList<String>(manager.getPoolIds().size() * 7 + 2);
+        var list = new ArrayList<String>(manager.getPoolIds().size() * 7 + 4);
 
+        list.add("tracked");
+        list.add("tracking");
         list.add("total_completed_raw");
         list.add("total_completed");
 

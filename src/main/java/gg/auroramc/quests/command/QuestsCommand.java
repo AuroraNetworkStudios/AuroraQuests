@@ -32,6 +32,30 @@ public class QuestsCommand extends BaseCommand {
         new MainMenu(profile).open();
     }
 
+    @Subcommand("track")
+    @Description("Toggles quest tracking")
+    @CommandCompletion("on|off")
+    @CommandPermission("aurora.quests.use")
+    public void onTrack(Player player, @Optional String state) {
+        var profile = plugin.getProfileManager().getProfile(player);
+        var msg = plugin.getConfigManager().getMessageConfig(player);
+        if (profile == null) {
+            Chat.sendMessage(player, msg.getDataNotLoadedYetSelf());
+            return;
+        }
+        var data = profile.getData();
+        boolean enable;
+        if (state == null) enable = data.isTrackingDisabled();
+        else if (state.equalsIgnoreCase("on")) enable = true;
+        else if (state.equalsIgnoreCase("off")) enable = false;
+        else {
+            Chat.sendMessage(player, msg.getTrackUsage());
+            return;
+        }
+        data.setTrackingDisabled(!enable);
+        Chat.sendMessage(player, enable ? msg.getTrackingEnabled() : msg.getTrackingDisabled());
+    }
+
     @Subcommand("reload")
     @Description("Reloads the plugin configs and applies reward auto correctors to players")
     @CommandPermission("aurora.quests.admin.reload")

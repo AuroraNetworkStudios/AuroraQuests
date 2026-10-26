@@ -6,6 +6,7 @@ import gg.auroramc.aurora.api.user.AuroraUser;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.questpool.QuestPool;
+import gg.auroramc.quests.api.tracking.QuestTracker;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ public class Profile {
     private final Player player;
 
     private final Map<String, QuestPool> data = new LinkedHashMap<>();
+    private final QuestTracker tracker = new QuestTracker(this);
 
     public Profile(AuroraUser user) {
         this.user = user;
@@ -50,6 +52,8 @@ public class Profile {
 
             questPool.startQuests();
         }
+
+        tracker.reset();
 
         if (!rolledPools.isEmpty() && player.hasPlayedBefore()) {
             var placeholder = Placeholder.of("{pool}", String.join(", ", rolledPools.stream().map(QuestPool::getName).toList()));
