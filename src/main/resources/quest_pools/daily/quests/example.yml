@@ -52,6 +52,35 @@ tasks:
         value: [ "spawn" ]
       min-ylevel: 0
       max-ylevel: 64
+      # Light level at the block (0-15), either bound is optional
+      min-light: 0
+      max-light: 7
+      # day or night
+      time: night
+      weather:
+        type: whitelist
+        value: [ "rain", "thunder" ] # clear, rain, thunder
+      structures:
+        type: whitelist
+        value: [ "minecraft:mineshaft" ]
+      # Entity the player must be riding (any entity type id)
+      riding:
+        type: whitelist
+        value: [ "minecraft:horse" ]
+      # Placeholder checks, every entry must pass. Put all of them under one placeholders: key
+      # comparison: ==, ===, >=, <=, <, >, contains, !contains (default ==)
+      # contains matches a whole entry of a list placeholder split by separator (default ", ")
+      placeholders:
+        has-speed:
+          placeholder: "%potioneffects_list_level%"
+          comparison: contains
+          value: "Speed II"
+          separator: ", "
+        has-strength:
+          placeholder: "%potioneffects_list_level%"
+          comparison: contains
+          value: "Strength II"
+          separator: ", "
       hand:
         # Items that the player must be holding when the action happens
         # Only one of these needs to match

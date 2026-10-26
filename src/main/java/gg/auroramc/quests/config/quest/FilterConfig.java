@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -13,9 +14,16 @@ public class FilterConfig {
     private SmartList worlds;
     private SmartList regions;
     private SmartList biomes;
+    private SmartList structures;
+    private SmartList weather;
+    private SmartList riding;
     private Integer minYLevel;
     private Integer maxYLevel;
+    private Integer minLight;
+    private Integer maxLight;
+    private String time;
     private HandConfig hand;
+    private Map<String, PlaceholderCheck> placeholders;
     private List<String> requirements = new ArrayList<>();
 
     @Getter
@@ -29,5 +37,14 @@ public class FilterConfig {
     @ToString
     public static class HandConfig {
         private Set<String> items;
+    }
+
+    @Getter
+    @ToString
+    public static class PlaceholderCheck {
+        private String placeholder;
+        private String comparison = "==";
+        private String value;
+        private String separator = ", ";
     }
 }
