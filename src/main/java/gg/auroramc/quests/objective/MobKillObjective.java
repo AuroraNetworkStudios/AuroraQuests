@@ -37,7 +37,7 @@ public class MobKillObjective extends TypedObjective {
         var id = AuroraAPI.getEntityManager().resolveId(entity);
         if (id.namespace().equals("mythicmobs")) return;
         // Only quests that list charged_creeper see it; others keep seeing plain creeper
-        if (tracksCharged && entity instanceof Creeper c && c.isPowered()) id = CHARGED_CREEPER;
+        if (tracksCharged && id.namespace().equals("minecraft") && entity instanceof Creeper c && c.isPowered()) id = CHARGED_CREEPER;
 
         progress(1, meta(id));
     }
