@@ -77,7 +77,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.2.build.31-alpha")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.134-stable")
     compileOnly("gg.auroramc:Aurora:2.6.0-SNAPSHOT")
     compileOnly("gg.auroramc:AuroraLevels:1.6.2")
     compileOnly("net.luckperms:api:5.4")
@@ -117,7 +117,7 @@ dependencies {
     compileOnly("org.quartz-scheduler:quartz:2.3.2")
     compileOnly("com.cronutils:cron-utils:9.2.0")
 
-    testImplementation("io.papermc.paper:paper-api:26.2.build.31-alpha")
+    testImplementation("io.papermc.paper:paper-api:26.2.build.134-stable")
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.0")
 
