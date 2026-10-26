@@ -50,4 +50,19 @@ public class ObjectiveType {
     public static final String PLAY_TIME = "PLAY_TIME";
     public static final String UNLOCK_VAULT = "UNLOCK_VAULT";
     public static final String BLOCK_BRUSH = "BLOCK_BRUSH";
+    public static final String BARTER = "BARTER";
+    public static final String BLOCK_CHANGE = "BLOCK_CHANGE";
+    public static final String BLOCK_FERTILIZE = "BLOCK_FERTILIZE";
+    public static final String BUCKET_ENTITY = "BUCKET_ENTITY";
+    public static final String COMPOST = "COMPOST";
+    public static final String CURE = "CURE";
+    public static final String HATCH = "HATCH";
+    public static final String INTERACT_BLOCK = "INTERACT_BLOCK";
+    public static final String INTERACT_ENTITY = "INTERACT_ENTITY";
+    public static final String DAMAGE_ITEM = "DAMAGE_ITEM";
+    public static final String MEND_ITEM = "MEND_ITEM";
+    public static final String LAUNCH_PROJECTILE = "LAUNCH_PROJECTILE";
+    public static final String RESURRECT = "RESURRECT";
+    public static final String SMITH = "SMITH";
+    public static final String TRADE = "TRADE";
 }

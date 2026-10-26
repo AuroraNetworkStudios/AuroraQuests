@@ -11,7 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 public class SmeltObjective extends TypedObjective {
 
@@ -27,7 +26,7 @@ public class SmeltObjective extends TypedObjective {
     public void handle(InventoryClickEvent event) {
         InventoryType inventoryType = event.getInventory().getType();
         if (event.getWhoClicked() == data.profile().getPlayer() && isSmeltingResultExtraction(event, inventoryType)) {
-            int taken = calculateTakeAmount(event);
+            int taken = InventoryUtils.calculateResultTakeAmount(event);
             ItemStack item = event.getCurrentItem();
             var id = AuroraAPI.getItemManager().resolveId(item);
             progress(taken, meta(id));
@@ -41,31 +40,5 @@ public class SmeltObjective extends TypedObjective {
                 && event.getWhoClicked() instanceof Player
                 && event.getRawSlot() == 2
                 && !InventoryUtils.isEmptySlot(event.getCurrentItem());
-    }
-
-    private static int calculateTakeAmount(final InventoryClickEvent event) {
-        final ItemStack result = event.getCurrentItem();
-        final PlayerInventory inventory = event.getWhoClicked().getInventory();
-        switch (event.getClick()) {
-            case SHIFT_LEFT:
-            case SHIFT_RIGHT:
-                return Math.min(InventoryUtils.calculateSpaceForItem(inventory, result), result.getAmount());
-            case CONTROL_DROP:
-                return InventoryUtils.calculateSpaceForItem(inventory, result);
-            case NUMBER_KEY:
-                return InventoryUtils.calculateSwapCraftAmount(result, inventory.getItem(event.getHotbarButton()));
-            case SWAP_OFFHAND:
-                return InventoryUtils.calculateSwapCraftAmount(result, inventory.getItemInOffHand());
-            case DROP:
-                return 1;
-            case RIGHT:
-                if (InventoryUtils.isEmptySlot(event.getCursor())) {
-                    return (result.getAmount() + 1) / 2;
-                }
-            case LEFT:
-                return InventoryUtils.calculateSimpleCraftAmount(result, event.getCursor());
-            default:
-                return 0;
-        }
     }
 }

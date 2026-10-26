@@ -240,6 +240,21 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         // VaultChangeStateEvent is available starting from Paper 1.21.5
         if (Version.isAtLeastVersion(21, 5))
             ObjectiveFactory.registerObjective(ObjectiveType.UNLOCK_VAULT, UnlockVaultObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.BARTER, BarterObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.BLOCK_CHANGE, BlockChangeObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.BLOCK_FERTILIZE, BlockFertilizeObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.BUCKET_ENTITY, BucketEntityObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.COMPOST, CompostObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.CURE, CureObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.HATCH, HatchObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.INTERACT_BLOCK, InteractBlockObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.INTERACT_ENTITY, InteractEntityObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.DAMAGE_ITEM, DamageItemObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.MEND_ITEM, MendItemObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.LAUNCH_PROJECTILE, LaunchProjectileObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.RESURRECT, ResurrectObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.SMITH, SmithObjective.class);
+        ObjectiveFactory.registerObjective(ObjectiveType.TRADE, TradeObjective.class);
 
     }
 
