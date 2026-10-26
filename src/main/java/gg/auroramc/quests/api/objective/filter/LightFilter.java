@@ -10,7 +10,7 @@ public class LightFilter implements ObjectiveFilter {
 
     @Override
     public boolean filter(ObjectiveMeta meta) {
-        var light = meta.getLocation().getBlock().getLightLevel();
+        var light = meta.getPlayer().getLocation().getBlock().getLightLevel();
 
         return (min == null || light >= min) && (max == null || light <= max);
     }
