@@ -112,6 +112,7 @@ public class QuestData extends UserDataHolder {
 
     public void clearPoolProgression(String poolId) {
         progression.remove(poolId);
+        dirty.set(true);
     }
 
     public void incrementCompletedCount(String poolId) {
