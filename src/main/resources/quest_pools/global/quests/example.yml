@@ -24,6 +24,11 @@ menu-item:
 #   material: LIME_STAINED_GLASS_PANE
 #   name: "&e{name} &a✔"
 
+# Optional appearance while this quest is locked. Any omitted
+# properties are inherited from menu-item.
+# locked-menu-item:
+#   material: RED_STAINED_GLASS_PANE
+
 locked-lore:
   - ""
   - "&cYou can't start this quest yet."

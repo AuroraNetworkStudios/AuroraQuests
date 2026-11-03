@@ -295,6 +295,10 @@ public class PoolMenu {
     private ItemConfig getMenuItem(Quest quest, ItemConfig completedQuestItem) {
         var menuItem = quest.getDefinition().getMenuItem();
         if (!quest.isCompleted()) {
+            var lockedMenuItem = quest.getDefinition().getLockedMenuItem();
+            if (lockedMenuItem != null && !quest.isUnlocked() && pool.isGlobal()) {
+                return menuItem.merge(lockedMenuItem);
+            }
             return menuItem;
         }
 
