@@ -24,6 +24,7 @@ public class QuestParser {
                 .tasks(parseTasks(config.getTasks()))
                 .menuItem(config.getMenuItem())
                 .completedMenuItem(config.getCompletedMenuItem())
+                .lockedMenuItem(config.getLockedMenuItem())
                 .completedLore(config.getCompletedLore())
                 .lockedLore(config.getLockedLore())
                 .uncompletedLore(config.getUncompletedLore())

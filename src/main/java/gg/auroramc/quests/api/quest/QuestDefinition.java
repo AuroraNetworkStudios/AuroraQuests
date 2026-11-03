@@ -18,6 +18,7 @@ public class QuestDefinition {
     private final String difficulty;
     private final ItemConfig menuItem;
     private final ItemConfig completedMenuItem;
+    private final ItemConfig lockedMenuItem;
     private final List<String> lockedLore;
     private final List<String> completedLore;
     private final List<String> uncompletedLore;
