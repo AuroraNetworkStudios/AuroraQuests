@@ -1,14 +1,14 @@
 package gg.auroramc.quests.hooks.luckperms;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.aurora.api.reward.PermissionReward;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.hooks.Hook;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.event.user.UserDataRecalculateEvent;
 import org.bukkit.Bukkit;
 
-public class LuckPermsHook implements Hook {
+public class LuckPermsHook implements Hook<AuroraQuests> {
     private AuroraQuests plugin;
 
     @Override

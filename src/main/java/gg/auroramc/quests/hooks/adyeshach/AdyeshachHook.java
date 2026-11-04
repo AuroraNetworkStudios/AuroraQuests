@@ -1,10 +1,10 @@
 package gg.auroramc.quests.hooks.adyeshach;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.hooks.Hook;
 import org.bukkit.Bukkit;
 
-public class AdyeshachHook implements Hook {
+public class AdyeshachHook implements Hook<AuroraQuests> {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new NpcListener(), AuroraQuests.getInstance());

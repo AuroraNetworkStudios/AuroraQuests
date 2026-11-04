@@ -5,6 +5,7 @@ import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.aurora.api.command.CommandDispatcher;
 import gg.auroramc.aurora.api.events.user.AuroraUserLoadedEvent;
 import gg.auroramc.aurora.api.localization.LocalizationProvider;
+import gg.auroramc.aurora.api.plugin.Hooks;
 import gg.auroramc.aurora.api.user.AuroraUser;
 import gg.auroramc.aurora.api.util.Version;
 import gg.auroramc.quests.api.AuroraQuestsPlugin;
@@ -18,7 +19,25 @@ import gg.auroramc.quests.api.questpool.Pool;
 import gg.auroramc.quests.api.questpool.PoolManager;
 import gg.auroramc.quests.command.CommandManager;
 import gg.auroramc.quests.config.ConfigManager;
-import gg.auroramc.quests.hooks.HookManager;
+import gg.auroramc.quests.hooks.adyeshach.AdyeshachHook;
+import gg.auroramc.quests.hooks.auraskills.AuraSkillsHook;
+import gg.auroramc.quests.hooks.auroralevels.AuroraLevelsHook;
+import gg.auroramc.quests.hooks.citizens.CitizensHook;
+import gg.auroramc.quests.hooks.customfishing.CustomFishingHook;
+import gg.auroramc.quests.hooks.economyshopgui.EconomyShopGuiHook;
+import gg.auroramc.quests.hooks.excellentshop.ExcellentShopHook;
+import gg.auroramc.quests.hooks.fancynpcs.FancyNPCsHook;
+import gg.auroramc.quests.hooks.luckperms.LuckPermsHook;
+import gg.auroramc.quests.hooks.mmolib.MMOLibHook;
+import gg.auroramc.quests.hooks.mythicdungeons.DungeonsHook;
+import gg.auroramc.quests.hooks.mythicmobs.MythicHook;
+import gg.auroramc.quests.hooks.nexo.NexoHook;
+import gg.auroramc.quests.hooks.shopguiplus.ShopGUIPlusHook;
+import gg.auroramc.quests.hooks.shopkeepers.ShopkeepersHook;
+import gg.auroramc.quests.hooks.superiorskyblock.SuperiorSkyblockHook;
+import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
+import gg.auroramc.quests.hooks.znpcs.ZnpcsHook;
+import gg.auroramc.quests.hooks.znpcsplus.ZnpcPlusHook;
 import gg.auroramc.quests.menu.PoolMenu;
 import gg.auroramc.quests.objective.*;
 import gg.auroramc.quests.parser.PoolParser;
@@ -57,6 +76,9 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
     @Getter
     private LocalizationProvider localizationProvider;
     private CommandManager commandManager;
+    // Created in onLoad, after checking that Aurora is new enough (an older one doesn't have Hooks)
+    @Getter
+    private Hooks<AuroraQuests> hooks;
     private ScheduledTask unlockTask;
 
     private BukkitEventBus bukkitEventBus;
@@ -96,7 +118,27 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
             );
         }
 
-        HookManager.loadHooks(this);
+        hooks = new Hooks<>(this)
+                .add(AuroraLevelsHook.class, "AuroraLevels")
+                .add(AuraSkillsHook.class, "AuraSkills")
+                .add(CustomFishingHook.class, "CustomFishing")
+                .add(MythicHook.class, "MythicMobs")
+                .add(DungeonsHook.class, "MythicDungeons")
+                .add(WorldGuardHook.class, "WorldGuard")
+                .add(CitizensHook.class, "Citizens")
+                .add(ShopkeepersHook.class, "Shopkeepers")
+                .add(MMOLibHook.class, "MythicLib")
+                .add(ShopGUIPlusHook.class, "ShopGUIPlus")
+                .add(EconomyShopGuiHook.class, "EconomyShopGUI", "EconomyShopGUI-Premium")
+                .add(LuckPermsHook.class, "LuckPerms")
+                .add(AdyeshachHook.class, "Adyeshach")
+                .add(SuperiorSkyblockHook.class, "SuperiorSkyblock2")
+                .add(FancyNPCsHook.class, "FancyNpcs")
+                .add(ZnpcsHook.class, "ServersNPC")
+                .add(ExcellentShopHook.class, "ExcellentShop")
+                .add(NexoHook.class, "Nexo")
+                .add(ZnpcPlusHook.class, "ZNPCsPlus");
+        hooks.load();
     }
 
     @Override
@@ -118,7 +160,7 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         commandManager = new CommandManager(this);
         commandManager.reload();
 
-        HookManager.enableHooks(this);
+        hooks.enable();
 
         var pools = new ArrayList<Pool>();
 

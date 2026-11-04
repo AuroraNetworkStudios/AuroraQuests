@@ -1,11 +1,11 @@
 package gg.auroramc.quests.hooks.excellentshop;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.hooks.Hook;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
-public class ExcellentShopHook implements Hook, Listener {
+public class ExcellentShopHook implements Hook<AuroraQuests>, Listener {
     @Override
     public void hook(AuroraQuests plugin) {
         if (canHook()) {

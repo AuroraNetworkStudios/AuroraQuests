@@ -1,14 +1,12 @@
 package gg.auroramc.quests.parser;
 
 import gg.auroramc.aurora.api.item.TypeId;
+import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.objective.ObjectiveDefinition;
 import gg.auroramc.quests.api.objective.filter.*;
 import gg.auroramc.quests.config.quest.FilterConfig;
 import gg.auroramc.quests.config.quest.TaskConfig;
-import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.entity.EntityType;
@@ -60,7 +58,7 @@ public class ObjectiveParser {
             taskFilters.add(new RequirementFilter(config.getRequirements()));
         }
 
-        if (config.getRegions() != null && HookManager.isEnabled(WorldGuardHook.class)) {
+        if (config.getRegions() != null && AuroraQuests.getInstance().getHooks().isEnabled(WorldGuardHook.class)) {
             taskFilters.add(new RegionFilter(config.getRegions().getValue(), config.getRegions().getType().equals("blacklist")));
         }
 

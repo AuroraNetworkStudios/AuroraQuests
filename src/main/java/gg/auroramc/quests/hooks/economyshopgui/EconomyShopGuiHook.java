@@ -1,10 +1,10 @@
 package gg.auroramc.quests.hooks.economyshopgui;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.hooks.Hook;
 import org.bukkit.Bukkit;
 
-public class EconomyShopGuiHook implements Hook {
+public class EconomyShopGuiHook implements Hook<AuroraQuests> {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new EconomyShopGUIListener(), plugin);

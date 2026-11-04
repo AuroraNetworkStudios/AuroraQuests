@@ -1,19 +1,23 @@
 package gg.auroramc.quests.hooks.mythicmobs;
 
+import gg.auroramc.aurora.api.plugin.Hook;
+import gg.auroramc.aurora.api.reward.integration.MythicStatReward;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.hooks.Hook;
+import gg.auroramc.quests.hooks.mythicmobs.reward.AuroraQuestsStatSource;
 import gg.auroramc.quests.hooks.mythicmobs.reward.MythicStatCorrector;
-import gg.auroramc.quests.hooks.mythicmobs.reward.MythicStatReward;
+import io.lumine.mythic.core.skills.stats.StatSource;
 import org.bukkit.Bukkit;
 
-public class MythicHook implements Hook {
+public class MythicHook implements Hook<AuroraQuests> {
+    // Quests' stats in MythicMobs, kept apart from other plugins'
+    public static final StatSource SOURCE = new AuroraQuestsStatSource();
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new MythicMobListener(), plugin);
 
         plugin.getPoolManager().getRewardFactory()
-                .registerRewardType(NamespacedId.fromDefault("mythic_stat"), MythicStatReward.class);
+                .registerRewardType(NamespacedId.fromDefault("mythic_stat"), () -> new MythicStatReward(SOURCE, AuroraQuests.logger()));
 
         plugin.getPoolManager().getRewardAutoCorrector()
                 .registerCorrector(NamespacedId.fromDefault("mythic_stat"), new MythicStatCorrector());

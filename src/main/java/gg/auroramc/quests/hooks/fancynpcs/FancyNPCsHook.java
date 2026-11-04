@@ -1,10 +1,10 @@
 package gg.auroramc.quests.hooks.fancynpcs;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.hooks.Hook;
 import org.bukkit.Bukkit;
 
-public class FancyNPCsHook implements Hook {
+public class FancyNPCsHook implements Hook<AuroraQuests> {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new NpcListener(), AuroraQuests.getInstance());

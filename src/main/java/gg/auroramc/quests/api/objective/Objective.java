@@ -1,16 +1,14 @@
 package gg.auroramc.quests.api.objective;
 
 import gg.auroramc.aurora.api.AuroraAPI;
-import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.event.BukkitEventBus;
 import gg.auroramc.quests.api.event.EventBus;
 import gg.auroramc.quests.api.event.EventType;
+import gg.auroramc.quests.api.objective.filter.ObjectiveFilter;
 import gg.auroramc.quests.api.profile.Profile;
 import gg.auroramc.quests.api.quest.Quest;
-import gg.auroramc.quests.api.objective.filter.ObjectiveFilter;
-import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import lombok.AccessLevel;
@@ -109,9 +107,8 @@ public abstract class Objective extends EventBus {
     protected boolean passesFilters(ObjectiveMeta meta) {
         if (!meta.getPlayer().hasPermission("aurora.quests.use")) return false;
 
-        if (HookManager.isEnabled(WorldGuardHook.class)) {
-            if (HookManager.getHook(WorldGuardHook.class).isBlocked(meta.getPlayer(), meta.getLocation())) return false;
-        }
+        var worldGuard = AuroraQuests.getInstance().getHooks().get(WorldGuardHook.class);
+        if (worldGuard != null && worldGuard.isBlocked(meta.getPlayer(), meta.getLocation())) return false;
 
         for (var filter : definition.getFilters()) {
             if (!filter.filter(meta)) return false;
@@ -231,5 +228,4 @@ public abstract class Objective extends EventBus {
     protected ObjectiveMeta meta(Location location) {
         return new ObjectiveMeta(data.profile().getPlayer(), location);
     }
-
 }

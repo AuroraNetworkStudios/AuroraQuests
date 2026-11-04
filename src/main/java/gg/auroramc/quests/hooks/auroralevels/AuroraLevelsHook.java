@@ -1,14 +1,14 @@
 package gg.auroramc.quests.hooks.auroralevels;
 
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.factory.ObjectiveFactory;
 import gg.auroramc.quests.api.objective.ObjectiveType;
-import gg.auroramc.quests.hooks.Hook;
 import gg.auroramc.quests.hooks.auroralevels.objective.GainAuroraLevelObjective;
 import gg.auroramc.quests.hooks.auroralevels.objective.GainAuroraXpObjective;
 
-public class AuroraLevelsHook implements Hook {
+public class AuroraLevelsHook implements Hook<AuroraQuests> {
     @Override
     public void hook(AuroraQuests plugin) {
         plugin.getPoolManager().getRewardFactory()

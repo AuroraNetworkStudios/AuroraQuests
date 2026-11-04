@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.api.AuraSkillsApi;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.stat.StatModifier;
 import gg.auroramc.aurora.api.reward.RewardCorrector;
+import gg.auroramc.aurora.api.reward.integration.AuraSkillsStatReward;
 import gg.auroramc.quests.AuroraQuests;
 import org.bukkit.entity.Player;
 
@@ -74,7 +75,7 @@ public class AuraSkillsCorrector implements RewardCorrector {
             if (!user.isLoaded()) return;
 
             for (var entry : statMap.entrySet()) {
-                var statKey = AuraSkillsStatReward.getAURA_SKILLS_STAT() + entry.getKey().getId().toString();
+                var statKey = AuraSkillsHook.PREFIX + entry.getKey().getId().toString();
 
                 var oldModifier = user.getStatModifier(statKey);
 

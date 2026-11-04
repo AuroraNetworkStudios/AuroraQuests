@@ -1,15 +1,15 @@
 package gg.auroramc.quests.hooks.mythicdungeons;
 
 import gg.auroramc.aurora.api.item.TypeId;
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.event.objective.PlayerCompleteDungeonEvent;
-import gg.auroramc.quests.hooks.Hook;
 import net.playavalon.mythicdungeons.api.events.dungeon.PlayerFinishDungeonEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class DungeonsHook implements Hook, Listener {
+public class DungeonsHook implements Hook<AuroraQuests>, Listener {
     private AuroraQuests plugin;
 
     @Override

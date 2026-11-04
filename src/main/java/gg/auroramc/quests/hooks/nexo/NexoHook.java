@@ -13,11 +13,11 @@ import com.nexomc.nexo.api.events.furniture.NexoFurniturePlaceEvent;
 import com.nexomc.nexo.utils.drops.DroppedLoot;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.event.objective.PlayerBreakCustomBlockEvent;
 import gg.auroramc.quests.api.event.objective.PlayerLootEvent;
 import gg.auroramc.quests.api.event.objective.PlayerPlaceCustomBlockEvent;
-import gg.auroramc.quests.hooks.Hook;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,8 +27,7 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class NexoHook implements Hook, Listener {
-
+public class NexoHook implements Hook<AuroraQuests>, Listener {
     @Override
     public void hook(AuroraQuests plugin) {
         AuroraQuests.logger().info("Hooked into Nexo for BLOCK_BREAK, BLOCK_PLACE, BLOCK_LOOT objectives.");

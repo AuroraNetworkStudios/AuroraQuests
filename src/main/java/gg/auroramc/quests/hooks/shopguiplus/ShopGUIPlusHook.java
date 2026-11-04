@@ -1,12 +1,12 @@
 package gg.auroramc.quests.hooks.shopguiplus;
 
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.plugin.Hook;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.event.objective.PlayerEarnFromSellEvent;
 import gg.auroramc.quests.api.event.objective.PlayerPurchaseItemEvent;
 import gg.auroramc.quests.api.event.objective.PlayerSellItemEvent;
 import gg.auroramc.quests.api.event.objective.PlayerSpendOnPurchaseEvent;
-import gg.auroramc.quests.hooks.Hook;
 import net.brcdev.shopgui.event.ShopPostTransactionEvent;
 import net.brcdev.shopgui.shop.ShopManager;
 import net.brcdev.shopgui.shop.ShopTransactionResult;
@@ -15,7 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-public class ShopGUIPlusHook implements Hook, Listener {
+public class ShopGUIPlusHook implements Hook<AuroraQuests>, Listener {
     @Override
     public void hook(AuroraQuests plugin) {
         AuroraQuests.logger().info("Hooked into ShopGUIPlus for BUY_WORTH, BUY and SELL_WORTH, SELL objectives.");
@@ -37,7 +37,6 @@ public class ShopGUIPlusHook implements Hook, Listener {
                 Bukkit.getPluginManager().callEvent(new PlayerPurchaseItemEvent(res.getPlayer(), new PlayerPurchaseItemEvent.TransactionItem(id, res.getAmount())));
             }
             Bukkit.getPluginManager().callEvent(new PlayerSpendOnPurchaseEvent(res.getPlayer(), price));
-
         } else {
             if (id != null) {
                 Bukkit.getPluginManager().callEvent(new PlayerSellItemEvent(res.getPlayer(), new PlayerSellItemEvent.TransactionItem(id, res.getAmount())));
