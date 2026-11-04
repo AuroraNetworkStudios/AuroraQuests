@@ -1,6 +1,6 @@
 package gg.auroramc.quests.api.questpool;
 
-import gg.auroramc.aurora.api.config.AuroraConfig;
+import gg.auroramc.aurora.api.config.ConfigLoader;
 import gg.auroramc.aurora.api.config.decorators.IgnoreField;
 import gg.auroramc.aurora.api.config.premade.ConcreteMatcherConfig;
 import gg.auroramc.aurora.api.config.premade.IntervalMatcherConfig;
@@ -10,6 +10,7 @@ import gg.auroramc.quests.config.quest.QuestConfig;
 import gg.auroramc.quests.config.quest.StartRequirementConfig;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class PoolConfig extends AuroraConfig {
+public class PoolConfig {
     private String type;
     private String name;
     private Map<String, Integer> difficulties;
@@ -85,7 +86,11 @@ public class PoolConfig extends AuroraConfig {
         private Boolean allowItemAmounts = false;
     }
 
-    public PoolConfig(File file) {
-        super(file);
+    /**
+     * Reads a file. These are read again on every reload, a server's own ones have no bundled copy, so nothing is used
+     * as defaults under them.
+     */
+    public static PoolConfig load(File file) {
+        return ConfigLoader.load(PoolConfig.class, file.getPath(), YamlConfiguration.loadConfiguration(file));
     }
 }

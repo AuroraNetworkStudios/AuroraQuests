@@ -1,23 +1,14 @@
 package gg.auroramc.quests.config;
 
-import gg.auroramc.aurora.api.config.AuroraConfig;
-import gg.auroramc.quests.AuroraQuests;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
-public class MessageConfig extends AuroraConfig {
-
+public class MessageConfig {
     private String prefix = "";
     private String reloaded = "&aReloaded configuration!";
     private String dataNotLoadedYet = "&cData for this player hasn't loaded yet, try again later!";
@@ -48,51 +39,6 @@ public class MessageConfig extends AuroraConfig {
     private TimerFormatConfig timerFormat = new TimerFormatConfig();
     private ConfigurationSection custom;
 
-    public MessageConfig(AuroraQuests plugin, String language) {
-        super(getFile(plugin, language));
-    }
-
-    public Map<String, String> toFlatMap() {
-        var map = new HashMap<String, String>();
-
-        for (var key : getRawConfig().getKeys(false)) {
-            if (key.equals("custom")) {
-                for (var customKey : getRawConfig().getConfigurationSection("custom").getKeys(true)) {
-                    map.put(customKey, getRawConfig().getString("custom." + customKey));
-                }
-            } else {
-                map.put(key, getRawConfig().getString(key));
-            }
-
-        }
-
-        return map;
-    }
-
-    private static File getFile(AuroraQuests plugin, String language) {
-        return new File(plugin.getDataFolder(), "messages_" + language + ".yml");
-    }
-
-    public static void saveDefault(AuroraQuests plugin, String language) {
-        if (!getFile(plugin, language).exists()) {
-            try {
-                plugin.saveResource("messages_" + language + ".yml", false);
-            } catch (Exception e) {
-                AuroraQuests.logger().warning("Internal message file for language: " + language + " not found! Creating a new one from english...");
-
-                var file = getFile(plugin, language);
-
-
-                try (InputStream in = plugin.getResource("messages_en.yml")) {
-                    Files.copy(in, file.toPath());
-                } catch (IOException ex) {
-                    AuroraQuests.logger().severe("Failed to create message file for language: " + language);
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
-
     @Getter
     public static final class TimerFormatConfig {
         private DurationFormatConfig shortFormat = new DurationFormatConfig();
@@ -114,8 +60,8 @@ public class MessageConfig extends AuroraConfig {
         private String seconds = "{value}s";
     }
 
-    @Override
-    protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
+    // Steps by config-version, only ever appended, each sets config-version itself
+    public static List<Consumer<YamlConfiguration>> migrations() {
         return List.of(
                 (yaml) -> {
                     yaml.set("quest-not-found", "&cThere isn't any quest with id {quest} in pool {pool}!");
@@ -152,7 +98,6 @@ public class MessageConfig extends AuroraConfig {
                     shortSingular.set("hours", "{value}h");
                     shortSingular.set("minutes", "{value}m");
                     shortSingular.set("seconds", "{value}s");
-
 
                     // Long
                     var longFormat = timer.createSection("long-format");

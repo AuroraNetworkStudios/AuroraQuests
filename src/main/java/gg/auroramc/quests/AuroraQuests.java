@@ -107,8 +107,8 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         }
         localizationProvider = new LocalizationProvider(AuroraAPI.getLanguageProvider(), configManager.getConfig().getPerPlayerLocale());
 
-        for (var msg : configManager.getMessageConfigs().entrySet()) {
-            localizationProvider.setLocaleValues(msg.getKey(), msg.getValue().toFlatMap());
+        for (var locale : configManager.getMessages().getLocales()) {
+            localizationProvider.setLocaleValues(locale, configManager.getMessages().toFlatMap(locale));
         }
 
         AuroraAPI.getUserManager().registerUserDataHolder(QuestData.class);
@@ -168,8 +168,8 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
 
         localizationProvider.clear();
         
-        for (var msg : configManager.getMessageConfigs().entrySet()) {
-            localizationProvider.setLocaleValues(msg.getKey(), msg.getValue().toFlatMap());
+        for (var locale : configManager.getMessages().getLocales()) {
+            localizationProvider.setLocaleValues(locale, configManager.getMessages().toFlatMap(locale));
         }
 
         commandManager.reload();

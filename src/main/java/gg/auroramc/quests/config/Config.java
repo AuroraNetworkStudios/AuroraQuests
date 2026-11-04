@@ -1,19 +1,16 @@
 package gg.auroramc.quests.config;
 
-import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.decorators.IgnoreField;
-import gg.auroramc.quests.AuroraQuests;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
-public class Config extends AuroraConfig {
+public class Config {
     private Boolean debug = false;
     private Boolean purgeInvalidDataOnLogin = false;
     private Boolean hideOutOfRangePageButtons = false;
@@ -32,20 +29,19 @@ public class Config extends AuroraConfig {
     private UnlockTaskConfig unlockTask = new UnlockTaskConfig();
 
     @IgnoreField
-    private Map<String, Integer> sortOderMap;
+    private volatile Map<String, Integer> sortOderMap;
 
-    @Override
-    public void load() {
-        super.load();
-        Map<String, Integer> difficultyOrder = new HashMap<>();
-        for (int i = 0; i < sortOrder.size(); i++) {
-            difficultyOrder.put(sortOrder.get(i), i);
+    // Worked out from sort-order on first use, the config doesn't change after it's loaded
+    public Map<String, Integer> getSortOderMap() {
+        var map = sortOderMap;
+        if (map == null) {
+            Map<String, Integer> difficultyOrder = new HashMap<>();
+            for (int i = 0; i < sortOrder.size(); i++) {
+                difficultyOrder.put(sortOrder.get(i), i);
+            }
+            sortOderMap = map = difficultyOrder;
         }
-        sortOderMap = difficultyOrder;
-    }
-
-    public Config(AuroraQuests plugin) {
-        super(getFile(plugin));
+        return map;
     }
 
     @Getter
@@ -86,18 +82,8 @@ public class Config extends AuroraConfig {
         private List<String> quests = List.of("quests");
     }
 
-    public static File getFile(AuroraQuests plugin) {
-        return new File(plugin.getDataFolder(), "config.yml");
-    }
-
-    public static void saveDefault(AuroraQuests plugin) {
-        if (!getFile(plugin).exists()) {
-            plugin.saveResource("config.yml", false);
-        }
-    }
-
-    @Override
-    protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
+    // Steps by config-version, only ever appended, each sets config-version itself
+    public static List<Consumer<YamlConfiguration>> migrations() {
         return List.of(
                 (yaml) -> {
                     yaml.set("purge-invalid-data-on-login", false);
