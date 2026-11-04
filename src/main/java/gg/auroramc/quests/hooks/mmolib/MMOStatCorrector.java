@@ -10,7 +10,6 @@ import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -51,7 +50,6 @@ public class MMOStatCorrector implements RewardCorrector {
                 }
             }
 
-
             if (!pool.hasLeveling()) continue;
             var level = pool.getLevel();
 
@@ -72,7 +70,8 @@ public class MMOStatCorrector implements RewardCorrector {
             }
         }
 
-        Bukkit.getGlobalRegionScheduler().runDelayed(plugin, (task) -> {
+        // On the player's own thread, on Folia only that thread may touch them
+        player.getScheduler().runDelayed(plugin, (task) -> {
             for (var entry : statMap.entrySet()) {
                 var statType = entry.getKey();
                 var s = entry.getValue();
@@ -80,7 +79,7 @@ public class MMOStatCorrector implements RewardCorrector {
                 new StatModifier(s.uuid, s.key, statType, s.value, s.modifierType, EquipmentSlot.OTHER, ModifierSource.OTHER)
                         .register(playerData);
             }
-        }, 3);
+        }, null, 3);
     }
 
     public record MMOStat(ModifierType modifierType, double value, String key, UUID uuid) {

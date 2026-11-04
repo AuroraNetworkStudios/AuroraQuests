@@ -2,7 +2,6 @@ package gg.auroramc.quests.objective;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.events.region.RegionBlockBreakEvent;
-import gg.auroramc.aurora.expansions.region.RegionExpansion;
 import gg.auroramc.quests.api.event.objective.PlayerBreakCustomBlockEvent;
 import gg.auroramc.quests.api.event.objective.PlayerPlaceCustomBlockEvent;
 import gg.auroramc.quests.api.objective.ObjectiveDefinition;
@@ -14,7 +13,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BuildingObjective extends TypedObjective {
-
     public BuildingObjective(Quest quest, ObjectiveDefinition definition, Profile.TaskDataWrapper data) {
         super(quest, definition, data);
     }
@@ -26,7 +24,6 @@ public class BuildingObjective extends TypedObjective {
         onEvent(RegionBlockBreakEvent.class, this::onBlockBreak, EventPriority.MONITOR);
         onEvent(PlayerBreakCustomBlockEvent.class, this::onBlockBreak, EventPriority.MONITOR);
     }
-
 
     public void onBlockPlace(BlockPlaceEvent event) {
         var player = event.getPlayer();
@@ -48,12 +45,9 @@ public class BuildingObjective extends TypedObjective {
     }
 
     public void onBlockBreak(PlayerBreakCustomBlockEvent event) {
-        var regionManager = AuroraAPI.getExpansions().getExpansion(RegionExpansion.class);
-        if (regionManager == null) return;
-
-        if (regionManager.isPlacedBlock(event.getBlock())) return;
+        // Never null, with the block tracker off nothing counts as placed
+        if (AuroraAPI.getRegionManager().isPlacedBlock(event.getBlock())) return;
 
         progress(-1, meta(event.getBlock().getLocation(), event.getType()));
     }
-
 }

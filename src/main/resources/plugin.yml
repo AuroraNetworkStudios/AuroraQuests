@@ -4,6 +4,7 @@ main: gg.auroramc.quests.AuroraQuests
 api-version: '26.2'
 authors: [ "erik_sz" ]
 folia-supported: true
+aurora-api: 3
 depend:
   - "Aurora"
 softdepend:

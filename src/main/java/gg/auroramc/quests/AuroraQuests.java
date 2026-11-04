@@ -1,6 +1,5 @@
 package gg.auroramc.quests;
 
-import gg.auroramc.aurora.Aurora;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.aurora.api.command.CommandDispatcher;
@@ -62,8 +61,15 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
 
     private BukkitEventBus bukkitEventBus;
 
+    // Set when Aurora is too old for this version, nothing else is done then
+    private boolean incompatible = false;
+
     @Override
     public void onLoad() {
+        if (!auroraIsCompatible()) {
+            incompatible = true;
+            return;
+        }
         instance = this;
         AuroraQuestsPlugin.instance = this;
         configManager = new ConfigManager(this);
@@ -95,7 +101,11 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        localizationProvider = new LocalizationProvider(Aurora.getLanguageProvider(), configManager.getConfig().getPerPlayerLocale());
+        if (incompatible) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        localizationProvider = new LocalizationProvider(AuroraAPI.getLanguageProvider(), configManager.getConfig().getPerPlayerLocale());
 
         for (var msg : configManager.getMessageConfigs().entrySet()) {
             localizationProvider.setLocaleValues(msg.getKey(), msg.getValue().toFlatMap());
@@ -119,7 +129,6 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         poolManager.reload(pools);
         loaded = true;
         loadPlayers();
-
 
         Bukkit.getGlobalRegionScheduler().run(this, (task) -> {
             reloadUnlockTask();
@@ -179,7 +188,8 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        commandManager.unregisterCommands();
+        if (incompatible) return;
+        if (commandManager != null) commandManager.unregisterCommands();
 
         try {
             l.info("Shutting down scheduler...");
@@ -191,6 +201,22 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         if (unlockTask != null && !unlockTask.isCancelled()) {
             unlockTask.cancel();
         }
+    }
+
+    // Built for Aurora 3: with an older one, say so clearly instead of failing somewhere deep inside. Only Bukkit is
+    // used here, an older Aurora doesn't have what this version needs.
+    private boolean auroraIsCompatible() {
+        var aurora = Bukkit.getPluginManager().getPlugin("Aurora");
+        var version = aurora == null ? "none" : aurora.getPluginMeta().getVersion();
+        int major;
+        try {
+            major = Integer.parseInt(version.split("[.-]")[0]);
+        } catch (NumberFormatException e) {
+            major = 0;
+        }
+        if (major >= 3) return true;
+        getLogger().severe(getName() + " " + getPluginMeta().getVersion() + " needs Aurora 3.0 or newer, but Aurora " + version + " is installed. Update Aurora.");
+        return false;
     }
 
     private void registerObjectives() {
@@ -255,7 +281,6 @@ public class AuroraQuests extends AuroraQuestsPlugin implements Listener {
         ObjectiveFactory.registerObjective(ObjectiveType.RESURRECT, ResurrectObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.SMITH, SmithObjective.class);
         ObjectiveFactory.registerObjective(ObjectiveType.TRADE, TradeObjective.class);
-
     }
 
     private void reloadUnlockTask() {

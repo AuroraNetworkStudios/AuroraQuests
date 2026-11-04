@@ -1,9 +1,7 @@
 package gg.auroramc.quests.config;
 
 import com.google.common.collect.Maps;
-import gg.auroramc.aurora.Aurora;
 import gg.auroramc.aurora.api.AuroraAPI;
-import gg.auroramc.aurora.api.localization.LocalizationProvider;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.questpool.PoolConfig;
 import gg.auroramc.quests.config.quest.QuestConfig;
@@ -48,8 +46,7 @@ public class ConfigManager {
 
         defaultLocale = Locale.forLanguageTag(config.getLanguage());
 
-
-        for (var locale : Aurora.getLanguageProvider().getSupportedLocales()) {
+        for (var locale : AuroraAPI.getLanguageProvider().getSupportedLocales()) {
             MessageConfig.saveDefault(plugin, locale.getLanguage());
             var messageConfig = new MessageConfig(plugin, locale.getLanguage());
             messageConfig.load();
@@ -74,10 +71,10 @@ public class ConfigManager {
     public MessageConfig getMessageConfig(CommandSender sender) {
         if (config.getPerPlayerLocale()) {
             if (sender instanceof Player player) {
-                var locale = Aurora.getLanguageProvider().getPlayerLocale(player);
+                var locale = AuroraAPI.getLanguageProvider().getPlayerLocale(player);
                 return messageConfigs.get(locale);
             } else {
-                return messageConfigs.get(Aurora.getLanguageProvider().getFallbackLocale());
+                return messageConfigs.get(AuroraAPI.getLanguageProvider().getFallbackLocale());
             }
         } else {
             return messageConfigs.get(defaultLocale);
@@ -130,7 +127,6 @@ public class ConfigManager {
                 var poolConfig = new PoolConfig(poolFile);
                 poolConfig.load();
                 poolConfig.setId(dir.toFile().getName());
-
 
                 var qDir = Paths.get(dir.toFile().getAbsolutePath(), "quests");
                 if (!Files.exists(qDir)) {

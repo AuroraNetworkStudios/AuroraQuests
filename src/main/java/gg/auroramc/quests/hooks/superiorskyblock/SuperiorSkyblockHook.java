@@ -52,7 +52,10 @@ public class SuperiorSkyblockHook implements Hook, Listener {
 
     @EventHandler
     public void onUserLoaded(AuroraUserLoadedEvent event) {
-        Bukkit.getGlobalRegionScheduler().runDelayed(AuroraQuests.getInstance(), (task) -> {
+        var joined = event.getUser().getPlayer();
+        if (joined == null) return;
+        // On the player's own thread, on Folia only that thread may touch them
+        joined.getScheduler().runDelayed(AuroraQuests.getInstance(), (task) -> {
             var player = event.getUser().getPlayer();
             if (player == null || !player.isOnline()) return;
 
@@ -66,7 +69,7 @@ public class SuperiorSkyblockHook implements Hook, Listener {
                 );
                 updateIslandUpgrades(island);
             }
-        }, 100);
+        }, null, 100);
     }
 
     private void updateIslandMembers(double worth, double level, Island island) {
