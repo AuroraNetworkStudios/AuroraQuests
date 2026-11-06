@@ -151,7 +151,7 @@ public class PoolMenu {
             }
 
             var qPlaceholders = quest.getPlaceholders();
-            var menuItem = getMenuItem(quest, cmf.getCompletedQuestItem());
+            var menuItem = getMenuItem(quest, cmf.getCompletedQuestItem(), cmf.getLockedQuestItem());
 
             var builder = ItemBuilder.of(menuItem).slot(slot)
                     .setName(Placeholder.execute(menuItem.getName(), Placeholder.of("{name}", quest.getDefinition().getName())))
@@ -292,12 +292,14 @@ public class PoolMenu {
         return quests;
     }
 
-    private ItemConfig getMenuItem(Quest quest, ItemConfig completedQuestItem) {
+    private ItemConfig getMenuItem(Quest quest, ItemConfig completedQuestItem, ItemConfig lockedQuestItem) {
         var menuItem = quest.getDefinition().getMenuItem();
-        if (!quest.isCompleted()) {
-            return menuItem;
+        if (quest.isCompleted()) {
+            return menuItem.merge(completedQuestItem).merge(quest.getDefinition().getCompletedMenuItem());
         }
-
-        return menuItem.merge(completedQuestItem).merge(quest.getDefinition().getCompletedMenuItem());
+        if (!quest.isUnlocked() && pool.isGlobal()) {
+            return menuItem.merge(lockedQuestItem).merge(quest.getDefinition().getLockedMenuItem());
+        }
+        return menuItem;
     }
 }

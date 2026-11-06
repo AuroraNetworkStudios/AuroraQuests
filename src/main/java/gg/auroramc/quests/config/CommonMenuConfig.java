@@ -10,6 +10,7 @@ public class CommonMenuConfig {
     private Map<String, Config.DisplayComponent> displayComponents;
     private Map<String, ItemConfig> items;
     private ItemConfig completedQuestItem;
+    private ItemConfig lockedQuestItem;
     private TaskStatuses taskStatuses;
     private ProgressBar progressBar;
 

@@ -21,6 +21,12 @@ progress-bar:
 #   material: LIME_STAINED_GLASS_PANE
 #   name: "&e{name} &a✔"
 
+# Optional fallback appearance for locked quests in global pools. Quest-specific
+# locked-menu-item settings take priority over this item.
+# locked-quest-item:
+#   material: RED_STAINED_GLASS_PANE
+#   name: "&7{name} &8🔒"
+
 # You can override these items in other menu configurations
 items:
   previous-page:

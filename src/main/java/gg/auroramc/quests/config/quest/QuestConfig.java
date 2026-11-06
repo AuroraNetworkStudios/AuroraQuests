@@ -19,6 +19,7 @@ public class QuestConfig {
     private String difficulty;
     private ItemConfig menuItem;
     private ItemConfig completedMenuItem;
+    private ItemConfig lockedMenuItem;
     private List<String> lockedLore;
     private List<String> completedLore;
     private List<String> uncompletedLore;
